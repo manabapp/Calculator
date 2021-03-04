@@ -1,0 +1,39 @@
+/* 
+  Localizable.strings
+  Calculator
+
+  Created by Hirose Manabu on 2021/03/03.
+  
+*/
+
+Message_Copied_to_clipboard = "Copied to clipboard.";
+Message_CantOpenURL = "Can't open the Internet site.";
+
+Button_Copy = "Copy";
+Button_Paste = "Paste";
+Button_Convert = "Convert";
+
+Label_AppName = "Calculator";
+Label_Calculator_D = "Decimal / Double";
+Label_Calculator_I = "Decimal / Int64";
+Label_Calculator_X = "Hex / UInt64";
+Label_Local_Time = "Local Time";
+Label_UTC = "UTC";
+Label_TimeZone = "TimeZone: ";
+Label_Network_Address = "Network Address: ";
+Label_Subnet_Mask = "Subnet Mask: ";
+Label_Broadcast_Address = "Broadcast Address: ";
+Label_byte = "byte";
+Label_bytes = "bytes";
+Label_Non-unicode_character_data = "Non-unicode character data";
+Label_Disabled = "Disabled";
+Label_Enabled = "Enabled";
+Label_Uppercase = "Uppercase";
+Label_Lowercase = "Lowercase";
+Label_Standard_type = "Standard type";
+Label_Keyboard_type = "Keyboard type";
+
+Footer_IDLE_TIMER = "To avoid going into sleep mode during calculation, turns off iOS's idle timer.\n";
+Footer_SOUND_EFFECTS = "Makes a push sound when tapping the button. In addition, sounds a vibration when error.\n";
+Footer_HEXADECIMAL_LETTER = "Specifies the alphabetical notation for hexadecimal.\n";
+Footer_UI_Style = "Selects the style of the app's design.\n";

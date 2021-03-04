@@ -2,14 +2,14 @@
 //  SceneDelegate.swift
 //  Calculator
 //
-//  Created by Hirose Manabu on 2021/03/04.
+//  Created by Hirose Manabu on 2021/03/03.
 //
 
 import UIKit
 import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
+    @ObservedObject(initialValue: CalcSharedObject()) var object: CalcSharedObject  // ADD 2021/03/03 manabapp
     var window: UIWindow?
 
 
@@ -20,7 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Create the SwiftUI view that provides the window contents.
         let contentView = ContentView()
-
+            .environmentObject(object)  // ADD 2021/03/03 manabapp
+        
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)

@@ -13,6 +13,31 @@
 		6CB0F6EA25F0C3C3002C552E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F6E925F0C3C3002C552E /* Assets.xcassets */; };
 		6CB0F6ED25F0C3C3002C552E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F6EC25F0C3C3002C552E /* Preview Assets.xcassets */; };
 		6CB0F6F025F0C3C3002C552E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F6EE25F0C3C3002C552E /* LaunchScreen.storyboard */; };
+		6CB0F6FB25F0C4AA002C552E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F6FD25F0C4AA002C552E /* Localizable.strings */; };
+		6CB0F70425F0C4DB002C552E /* apps.css in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F70225F0C4DB002C552E /* apps.css */; };
+		6CB0F70525F0C4DB002C552E /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F70325F0C4DB002C552E /* style.css */; };
+		6CB0F70B25F0C4E2002C552E /* PrivacyPolicy_ja.html in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F70725F0C4E2002C552E /* PrivacyPolicy_ja.html */; };
+		6CB0F70C25F0C4E2002C552E /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F70825F0C4E2002C552E /* index.html */; };
+		6CB0F70D25F0C4E2002C552E /* PrivacyPolicy.html in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F70925F0C4E2002C552E /* PrivacyPolicy.html */; };
+		6CB0F70E25F0C4E2002C552E /* index_ja.html in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F70A25F0C4E2002C552E /* index_ja.html */; };
+		6CB0F71525F0C4EB002C552E /* Calculator_splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F71025F0C4EB002C552E /* Calculator_splash.png */; };
+		6CB0F71625F0C4EB002C552E /* AppStore_US.svg in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F71125F0C4EB002C552E /* AppStore_US.svg */; };
+		6CB0F71725F0C4EB002C552E /* mark-github.svg in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F71225F0C4EB002C552E /* mark-github.svg */; };
+		6CB0F71825F0C4EB002C552E /* AppStore_JP.svg in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F71325F0C4EB002C552E /* AppStore_JP.svg */; };
+		6CB0F71925F0C4EB002C552E /* home.svg in Resources */ = {isa = PBXBuildFile; fileRef = 6CB0F71425F0C4EB002C552E /* home.svg */; };
+		6CB0F72625F0C55A002C552E /* CalcSharedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F71B25F0C559002C552E /* CalcSharedObject.swift */; };
+		6CB0F72725F0C55A002C552E /* CalcIPAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F71C25F0C559002C552E /* CalcIPAddress.swift */; };
+		6CB0F72825F0C55A002C552E /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F71D25F0C559002C552E /* Data+Extension.swift */; };
+		6CB0F72925F0C55A002C552E /* CalcCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F71E25F0C559002C552E /* CalcCalculator.swift */; };
+		6CB0F72A25F0C55A002C552E /* Bbody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F71F25F0C559002C552E /* Bbody.swift */; };
+		6CB0F72C25F0C55A002C552E /* CalcUNIXTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F72125F0C559002C552E /* CalcUNIXTime.swift */; };
+		6CB0F72D25F0C55A002C552E /* DataScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F72225F0C559002C552E /* DataScreen.swift */; };
+		6CB0F72E25F0C55A002C552E /* CalcCharacter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F72325F0C559002C552E /* CalcCharacter.swift */; };
+		6CB0F72F25F0C55A002C552E /* CalcSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F72425F0C559002C552E /* CalcSetting.swift */; };
+		6CB0F73025F0C55A002C552E /* ByteField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F72525F0C55A002C552E /* ByteField.swift */; };
+		6CB0F73425F0C632002C552E /* HorizontalBbody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F73325F0C632002C552E /* HorizontalBbody.swift */; };
+		6CB0F73825F0C668002C552E /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F73625F0C668002C552E /* String+Extension.swift */; };
+		6CB0F73925F0C668002C552E /* UInt8+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB0F73725F0C668002C552E /* UInt8+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +49,32 @@
 		6CB0F6EC25F0C3C3002C552E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6CB0F6EF25F0C3C3002C552E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6CB0F6F125F0C3C3002C552E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6CB0F6FC25F0C4AA002C552E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		6CB0F6FF25F0C4B5002C552E /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		6CB0F70225F0C4DB002C552E /* apps.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = apps.css; sourceTree = "<group>"; };
+		6CB0F70325F0C4DB002C552E /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
+		6CB0F70725F0C4E2002C552E /* PrivacyPolicy_ja.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = PrivacyPolicy_ja.html; sourceTree = "<group>"; };
+		6CB0F70825F0C4E2002C552E /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+		6CB0F70925F0C4E2002C552E /* PrivacyPolicy.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = PrivacyPolicy.html; sourceTree = "<group>"; };
+		6CB0F70A25F0C4E2002C552E /* index_ja.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index_ja.html; sourceTree = "<group>"; };
+		6CB0F71025F0C4EB002C552E /* Calculator_splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Calculator_splash.png; sourceTree = "<group>"; };
+		6CB0F71125F0C4EB002C552E /* AppStore_US.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppStore_US.svg; sourceTree = "<group>"; };
+		6CB0F71225F0C4EB002C552E /* mark-github.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "mark-github.svg"; sourceTree = "<group>"; };
+		6CB0F71325F0C4EB002C552E /* AppStore_JP.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppStore_JP.svg; sourceTree = "<group>"; };
+		6CB0F71425F0C4EB002C552E /* home.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = home.svg; sourceTree = "<group>"; };
+		6CB0F71B25F0C559002C552E /* CalcSharedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalcSharedObject.swift; sourceTree = "<group>"; };
+		6CB0F71C25F0C559002C552E /* CalcIPAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalcIPAddress.swift; sourceTree = "<group>"; };
+		6CB0F71D25F0C559002C552E /* Data+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
+		6CB0F71E25F0C559002C552E /* CalcCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalcCalculator.swift; sourceTree = "<group>"; };
+		6CB0F71F25F0C559002C552E /* Bbody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bbody.swift; sourceTree = "<group>"; };
+		6CB0F72125F0C559002C552E /* CalcUNIXTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalcUNIXTime.swift; sourceTree = "<group>"; };
+		6CB0F72225F0C559002C552E /* DataScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataScreen.swift; sourceTree = "<group>"; };
+		6CB0F72325F0C559002C552E /* CalcCharacter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalcCharacter.swift; sourceTree = "<group>"; };
+		6CB0F72425F0C559002C552E /* CalcSetting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalcSetting.swift; sourceTree = "<group>"; };
+		6CB0F72525F0C55A002C552E /* ByteField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteField.swift; sourceTree = "<group>"; };
+		6CB0F73325F0C632002C552E /* HorizontalBbody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HorizontalBbody.swift; sourceTree = "<group>"; };
+		6CB0F73625F0C668002C552E /* String+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		6CB0F73725F0C668002C552E /* UInt8+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UInt8+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +91,7 @@
 		6CB0F6D725F0C3C2002C552E = {
 			isa = PBXGroup;
 			children = (
+				6CB0F70025F0C4BF002C552E /* docs */,
 				6CB0F6E225F0C3C2002C552E /* Calculator */,
 				6CB0F6E125F0C3C2002C552E /* Products */,
 			);
@@ -58,11 +110,25 @@
 			children = (
 				6CB0F6E325F0C3C2002C552E /* AppDelegate.swift */,
 				6CB0F6E525F0C3C2002C552E /* SceneDelegate.swift */,
+				6CB0F71B25F0C559002C552E /* CalcSharedObject.swift */,
+				6CB0F71F25F0C559002C552E /* Bbody.swift */,
+				6CB0F73325F0C632002C552E /* HorizontalBbody.swift */,
+				6CB0F72525F0C55A002C552E /* ByteField.swift */,
+				6CB0F72225F0C559002C552E /* DataScreen.swift */,
 				6CB0F6E725F0C3C2002C552E /* ContentView.swift */,
+				6CB0F71E25F0C559002C552E /* CalcCalculator.swift */,
+				6CB0F72125F0C559002C552E /* CalcUNIXTime.swift */,
+				6CB0F71C25F0C559002C552E /* CalcIPAddress.swift */,
+				6CB0F72325F0C559002C552E /* CalcCharacter.swift */,
+				6CB0F72425F0C559002C552E /* CalcSetting.swift */,
+				6CB0F73725F0C668002C552E /* UInt8+Extension.swift */,
+				6CB0F71D25F0C559002C552E /* Data+Extension.swift */,
+				6CB0F73625F0C668002C552E /* String+Extension.swift */,
 				6CB0F6E925F0C3C3002C552E /* Assets.xcassets */,
 				6CB0F6EE25F0C3C3002C552E /* LaunchScreen.storyboard */,
 				6CB0F6F125F0C3C3002C552E /* Info.plist */,
 				6CB0F6EB25F0C3C3002C552E /* Preview Content */,
+				6CB0F6FD25F0C4AA002C552E /* Localizable.strings */,
 			);
 			path = Calculator;
 			sourceTree = "<group>";
@@ -73,6 +139,32 @@
 				6CB0F6EC25F0C3C3002C552E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		6CB0F70025F0C4BF002C552E /* docs */ = {
+			isa = PBXGroup;
+			children = (
+				6CB0F70225F0C4DB002C552E /* apps.css */,
+				6CB0F70325F0C4DB002C552E /* style.css */,
+				6CB0F70A25F0C4E2002C552E /* index_ja.html */,
+				6CB0F70825F0C4E2002C552E /* index.html */,
+				6CB0F70725F0C4E2002C552E /* PrivacyPolicy_ja.html */,
+				6CB0F70925F0C4E2002C552E /* PrivacyPolicy.html */,
+				6CB0F70125F0C4C5002C552E /* img */,
+			);
+			path = docs;
+			sourceTree = "<group>";
+		};
+		6CB0F70125F0C4C5002C552E /* img */ = {
+			isa = PBXGroup;
+			children = (
+				6CB0F71325F0C4EB002C552E /* AppStore_JP.svg */,
+				6CB0F71125F0C4EB002C552E /* AppStore_US.svg */,
+				6CB0F71025F0C4EB002C552E /* Calculator_splash.png */,
+				6CB0F71425F0C4EB002C552E /* home.svg */,
+				6CB0F71225F0C4EB002C552E /* mark-github.svg */,
+			);
+			path = img;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -116,6 +208,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ja,
 			);
 			mainGroup = 6CB0F6D725F0C3C2002C552E;
 			productRefGroup = 6CB0F6E125F0C3C2002C552E /* Products */;
@@ -132,9 +225,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CB0F70E25F0C4E2002C552E /* index_ja.html in Resources */,
+				6CB0F71725F0C4EB002C552E /* mark-github.svg in Resources */,
 				6CB0F6F025F0C3C3002C552E /* LaunchScreen.storyboard in Resources */,
+				6CB0F70525F0C4DB002C552E /* style.css in Resources */,
+				6CB0F70425F0C4DB002C552E /* apps.css in Resources */,
+				6CB0F71525F0C4EB002C552E /* Calculator_splash.png in Resources */,
+				6CB0F6FB25F0C4AA002C552E /* Localizable.strings in Resources */,
+				6CB0F71925F0C4EB002C552E /* home.svg in Resources */,
+				6CB0F71625F0C4EB002C552E /* AppStore_US.svg in Resources */,
+				6CB0F70D25F0C4E2002C552E /* PrivacyPolicy.html in Resources */,
 				6CB0F6ED25F0C3C3002C552E /* Preview Assets.xcassets in Resources */,
+				6CB0F71825F0C4EB002C552E /* AppStore_JP.svg in Resources */,
+				6CB0F70C25F0C4E2002C552E /* index.html in Resources */,
 				6CB0F6EA25F0C3C3002C552E /* Assets.xcassets in Resources */,
+				6CB0F70B25F0C4E2002C552E /* PrivacyPolicy_ja.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,9 +250,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CB0F73925F0C668002C552E /* UInt8+Extension.swift in Sources */,
 				6CB0F6E425F0C3C2002C552E /* AppDelegate.swift in Sources */,
 				6CB0F6E625F0C3C2002C552E /* SceneDelegate.swift in Sources */,
+				6CB0F72E25F0C55A002C552E /* CalcCharacter.swift in Sources */,
+				6CB0F72D25F0C55A002C552E /* DataScreen.swift in Sources */,
+				6CB0F73425F0C632002C552E /* HorizontalBbody.swift in Sources */,
+				6CB0F72625F0C55A002C552E /* CalcSharedObject.swift in Sources */,
+				6CB0F72F25F0C55A002C552E /* CalcSetting.swift in Sources */,
+				6CB0F72725F0C55A002C552E /* CalcIPAddress.swift in Sources */,
+				6CB0F72925F0C55A002C552E /* CalcCalculator.swift in Sources */,
+				6CB0F73025F0C55A002C552E /* ByteField.swift in Sources */,
 				6CB0F6E825F0C3C2002C552E /* ContentView.swift in Sources */,
+				6CB0F72A25F0C55A002C552E /* Bbody.swift in Sources */,
+				6CB0F72825F0C55A002C552E /* Data+Extension.swift in Sources */,
+				6CB0F73825F0C668002C552E /* String+Extension.swift in Sources */,
+				6CB0F72C25F0C55A002C552E /* CalcUNIXTime.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,6 +280,15 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
+		6CB0F6FD25F0C4AA002C552E /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6CB0F6FC25F0C4AA002C552E /* en */,
+				6CB0F6FF25F0C4B5002C552E /* ja */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -169,6 +296,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -230,6 +358,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

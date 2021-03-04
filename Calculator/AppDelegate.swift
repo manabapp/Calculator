@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  Calculator
 //
-//  Created by Hirose Manabu on 2021/03/04.
+//  Created by Hirose Manabu on 2021/03/03.
 //
 
 import UIKit
