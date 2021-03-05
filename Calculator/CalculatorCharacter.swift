@@ -1,5 +1,5 @@
 //
-//  CalcCharacter.swift
+//  CalculatorCharacter.swift
 //  Calculator
 //
 //  Created by Hirose Manabu on 2021/03/03.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct CaclCharacter: View {
-    @EnvironmentObject var object: CalcSharedObject
+struct CalculatorCharacter: View {
+    @EnvironmentObject var object: CalculatorSharedObject
     @State var mode: Int = 0
     @State var data = Data([])
     @State var returnCodeIndex = 1
@@ -23,9 +23,11 @@ struct CaclCharacter: View {
     @State var isOtherEditable: Bool = false  //Fixed
     @State var isOtherDecodable: Bool = true  //Fixed
     @State var isInvalid: Bool = false
+    @State var isTooLarge: Bool = false
+    @State var isKeyboardOpened: Bool = false
     
     private var buttonSpace: CGFloat { object.isStandard ? 1.0 : 5.0 }
-    private var isClearX: Bool { self.hexText.isEmpty && self.data.count == 0 && !self.isInvalid }
+    private var isClearX: Bool { self.hexText.isEmpty && self.data.count == 0 && !self.isInvalid && !self.isTooLarge }
     private var isClearA: Bool { self.asciiText.isEmpty && self.isAsciiEditable && self.isAsciiDecodable }
     
     var body: some View {
@@ -41,9 +43,14 @@ struct CaclCharacter: View {
                 Spacer()
                 Text("Non-hex code included")
                     .font(.system(size: 12, weight: isInvalid ? .bold : .light))
-                    .foregroundColor(isInvalid ? Color.init(.systemRed) : Color.init(CalcSharedObject.isDark ? .darkGray : .lightGray))
+                    .foregroundColor(isInvalid ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
+                Spacer()
+                Text("Data too large")
+                    .font(.system(size: 12, weight: isTooLarge ? .bold : .light))
+                    .foregroundColor(isTooLarge ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
                 Spacer()
             }
+            .padding(.bottom, 5)
             
             HStack(alignment: .bottom) {
                 Text("Hex")
@@ -61,11 +68,11 @@ struct CaclCharacter: View {
             VStack(spacing: buttonSpace) {
                 HStack(spacing: 0) {
                     DataScreen(text: self.$indexText, isEditable: self.$isOtherEditable, isDecodable: self.$isOtherDecodable)
-                        .frame(width: DataScreen.editorIndexWidth)
+                        .frame(width: object.isCharsLarge ? DataScreen.editorIndexWidth2 : DataScreen.editorIndexWidth)
                     DataScreen(text: self.$hexText, isEditable: self.$isHexEditable, isDecodable: self.$isHexDecodable)
-                        .frame(width: DataScreen.editorHexWidth)
+                        .frame(width: object.isCharsLarge ? DataScreen.editorHexWidth2 : DataScreen.editorHexWidth)
                     DataScreen(text: self.$charsText, isEditable: self.$isOtherEditable, isDecodable: self.$isOtherDecodable)
-                        .frame(width: DataScreen.editorCharsWidth)
+                        .frame(width: object.isCharsLarge ? DataScreen.editorCharsWidth2 : DataScreen.editorCharsWidth)
                 }
                 
                 HStack(spacing: buttonSpace) {
@@ -114,20 +121,26 @@ struct CaclCharacter: View {
                     .padding(.leading, 0)
                 
                 HStack(spacing: buttonSpace) {
-                    Button(action: { self.copy(isHex: false) }) { HorizontalBbody(t: "Button_Copy", i: "doc.on.doc", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }
-                    Button(action: { self.paste(isHex: false) }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }
-                    Button(action: { self.clear(isHex: false) }) { HorizontalBbody(t: "C", c: 3, b: .lightGray, f: self.isAsciiEditable ? .black : .systemGray) }
+                    Button(action: { self.copy(isHex: false) }) { HorizontalBbody(t: "Button_Copy", i: "doc.on.doc", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
+                    Button(action: { self.paste(isHex: false) }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
+                    Button(action: { self.clear(isHex: false) }) { HorizontalBbody(t: "C", c: 3, b: .lightGray, f: .black) }
                 }
-                .disabled(!self.isAsciiEditable)
                 .padding(.horizontal, object.isStandard ? 0 : 5)
                 
                 HStack(spacing: buttonSpace) {
-                    Button(action: { self.convertA2X() }) { HorizontalBbody(t: "Button_Convert", i: "arrowtriangle.up.circle", c: 2, b: .systemBlue, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
-                    Button(action: { self.convertX2A() }) { HorizontalBbody(t: "Button_Convert", i: "arrowtriangle.down.circle", c: 2, b: .systemBlue) }
+                    Button(action: { self.convertA2X() }) { HorizontalBbody(t: "Button_Convert", i: "arrowtriangle.up.circle", c: 5, w: 2, b: .systemBlue, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
+                    Button(action: { self.convertX2A() }) { HorizontalBbody(t: "Button_Convert", i: "arrowtriangle.down.circle", c: 5, w: 2, b: .systemBlue) }
+                    Button(action: { UIApplication.shared.closeKeyboard() }) { HorizontalBbody(i: "keyboard.chevron.compact.down", c: 5, b: .systemBlue, f: self.isKeyboardOpened ? .white : .systemGray) }.disabled(!isKeyboardOpened)
                 }
                 .padding(.horizontal, object.isStandard ? 0 : 5)
                 .padding(.bottom, object.isStandard ? 0 : 5)
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
+            self.isKeyboardOpened = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidHideNotification)) { _ in
+            self.isKeyboardOpened = false
         }
     }
 
@@ -166,6 +179,13 @@ struct CaclCharacter: View {
             self.data = after.data(using: .utf8)!
         }
         
+        isTooLarge = false
+        if self.data.count > 65536 {
+            isTooLarge = true
+            object.sound(isError: true)
+            return
+        }
+        
         self.setIndex()
         self.setHex()
         self.setChars()
@@ -173,12 +193,12 @@ struct CaclCharacter: View {
     }
     
     private func convertX2A() {
+        self.isInvalid = false
         guard !isClearX else { return }
         var hexString: String = ""
         var uint8array: [UInt8] = []
         var count: Int = 0
         
-        self.isInvalid = false
         var text = self.hexText.replacingOccurrences(of: " ", with: "")
         text = text.replacingOccurrences(of: "\n", with: "")
         let textArray = Array(text)
@@ -196,6 +216,13 @@ struct CaclCharacter: View {
             count += 2
         }
         self.data = Data(uint8array)
+        
+        isTooLarge = false
+        if self.data.count > 65536 {
+            isTooLarge = true
+            object.sound(isError: true)
+            return
+        }
         
         self.setIndex()
         self.setHex()
@@ -234,15 +261,13 @@ struct CaclCharacter: View {
         var dumpString: String = ""
         
         while count < self.data.count {
-            if count % 16 == 0 {
-                if count < 10000 {
-                    dumpString += String(format: " %04d:\n", count)
-                }
-                else {
-                    dumpString += String(format: "%05d:\n", count)
-                }
+            if count < 10000 {
+                dumpString += String(format: " %04d:\n", count)
             }
-            count += 1
+            else {
+                dumpString += String(format: "%05d:\n", count)
+            }
+            count += object.isCharsLarge ? 8 : 16
         }
         self.indexText = dumpString
     }
@@ -253,11 +278,17 @@ struct CaclCharacter: View {
         let bytes = self.data.uint8array!
         
         while count < self.data.count {
-            dumpString += String(format: "%02x", bytes[count])
+            dumpString += String(format: object.isUpper ? "%02X" : "%02x", bytes[count])
             count += 1
             if count % 16 == 0 {
                 dumpString += "\n"
                 continue
+            }
+            if count % 8 == 0 {
+                if object.isCharsLarge {
+                    dumpString += "\n"
+                    continue
+                }
             }
             if count % 4 == 0 {
                 dumpString += " "
@@ -279,7 +310,16 @@ struct CaclCharacter: View {
                 continue
             }
             if count % 8 == 0 {
+                if object.isCharsLarge {
+                    dumpString += "\n"
+                    continue
+                }
                 dumpString += " "
+            }
+            if count % 4 == 0 {
+                if object.isCharsLarge {
+                    dumpString += " "
+                }
             }
         }
         self.charsText = dumpString
@@ -291,7 +331,7 @@ struct CaclCharacter: View {
             var hexString: String = ""
             let bytes = self.data.uint8array!
             for byte in bytes {
-                hexString += String(format: "%02x", byte)
+                hexString += String(format: object.isUpper ? "%02X" : "%02x", byte)
             }
             UIPasteboard.general.string = hexString
         }
@@ -328,6 +368,7 @@ struct CaclCharacter: View {
             self.hexText = ""
             self.charsText = ""
             self.isInvalid = false
+            self.isTooLarge = false
         }
         else {
             guard !isClearA else { return }

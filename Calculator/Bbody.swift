@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct Bbody: View {
-    @EnvironmentObject var object: CalcSharedObject
+    @EnvironmentObject var object: CalculatorSharedObject
     var t: String? = nil         //Label of Text
     var i: String? = nil         //SystemName of Image
     let c: Int                   //Number of column in parent view
@@ -39,7 +39,7 @@ struct Bbody: View {
         case 736 ..< 812:  Self.rate = 0.8; Self.fontSize = 20.0 //Device size 414x736 : iPhone 6s Plus, 7 Plus, 8 Plus
         case 667 ..< 736:  Self.rate = 0.8; Self.fontSize = 18.0 //Device size 375x667 : iPhone 6s, 7, 8, SE(2nd Gen)
         case 568 ..< 667:  Self.rate = 0.8; Self.fontSize = 15.5 //Device size 320x568 : iPhone SE(1st Gen), iPod touch(7th Gen)
-        default:           assertionFailure("SocTestScreen.initSize: width = \(height)") //0 or Unexpeted
+        default:           assertionFailure("Bbody.initSize: height = \(height)") //0 or Unexpeted
         }
     }
     
@@ -55,7 +55,7 @@ struct Bbody: View {
                 .cornerRadius(object.isStandard ? 0 : buttonWidth / 4)
                 .overlay(
                     RoundedRectangle(cornerRadius: object.isStandard ? 0 : buttonWidth / 4)
-                        .stroke(Color.init(CalcSharedObject.isDark ? UIColor.lightGray: UIColor.darkGray), lineWidth: s ? 1 : 0)
+                        .stroke(Color.init(CalculatorSharedObject.isDark ? UIColor.lightGray: UIColor.darkGray), lineWidth: s ? 1 : 0)
                 )
                 .opacity(s ? 0.8:1.0)
         }
@@ -70,7 +70,7 @@ struct Bbody: View {
                 .cornerRadius(buttonRadius)
                 .overlay(
                     RoundedRectangle(cornerRadius: buttonRadius)
-                        .stroke(Color.init(CalcSharedObject.isDark ? UIColor.lightGray: UIColor.darkGray), lineWidth: s ? 1 : 0)
+                        .stroke(Color.init(CalculatorSharedObject.isDark ? UIColor.lightGray: UIColor.darkGray), lineWidth: s ? 1 : 0)
                 )
                 .opacity(s ? 0.8 : 1.0)
         }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ByteField: View {
-    @EnvironmentObject var object: CalcSharedObject
+    @EnvironmentObject var object: CalculatorSharedObject
     var byte: UInt8
     let label: String
     
@@ -27,7 +27,7 @@ struct ByteField: View {
         case 390 ..< 414:  Self.fontSize = 11.3 //Device width 390pt : iPhone 12, 12 Pro
         case 375 ..< 390:  Self.fontSize = 10.5 //Device width 375pt : iPhone 6s, 7, 8, SE(2nd Gen), X, XS, 11 Pro, 12 mini
         case 320 ..< 375:  Self.fontSize =  8.8 //Device width 320pt : iPhone SE(1st Gen), iPod touch(7th Gen)
-        default:           assertionFailure("SocTestScreen.initSize: width = \(width)") //0 or Unexpeted
+        default:           assertionFailure("ByteField.initSize: width = \(width)") //0 or Unexpeted
         }
         
         switch height {
@@ -38,7 +38,7 @@ struct ByteField: View {
         case 736 ..< 812:  Self.height1 = 76.0; Self.height2 = 120.0 //Device size 414x736 : iPhone 6s Plus, 7 Plus, 8 Plus
         case 667 ..< 736:  Self.height1 = 70.0; Self.height2 = 110.0 //Device size 375x667 : iPhone 6s, 7, 8, SE(2nd Gen)
         case 568 ..< 667:  Self.height1 = 50.0; Self.height2 = 80.0 //Device size 320x568 : iPhone SE(1st Gen), iPod touch(7th Gen)
-        default:           assertionFailure("SocTestScreen.initSize: width = \(height)") //0 or Unexpeted
+        default:           assertionFailure("ByteField.initSize: height = \(height)") //0 or Unexpeted
         }
     }
     
@@ -61,7 +61,7 @@ struct ByteField: View {
                 }
             }
             Text(String(format: object.isUpper ? "%01X  %01X" : "%01x  %01x", (self.byte >> 4) & 0x0F, self.byte & 0x0F))
-                .font(.system(size: Self.fontSize, weight: .bold))
+                .font(Font.custom("Courier", size: monospaceFontSize).monospacedDigit()).bold()
                 .foregroundColor(Color.init(.lightGray))
                 .padding(.top, -2)
         }

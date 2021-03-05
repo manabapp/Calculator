@@ -1,5 +1,5 @@
 //
-//  CalcSharedObject.swift
+//  CalculatorSharedObject.swift
 //  Calculator
 //
 //  Created by Hirose Manabu on 2021/03/03.
@@ -8,17 +8,18 @@
 import SwiftUI
 import AudioToolbox
 
-class CalcSharedObject: ObservableObject {
+class CalculatorSharedObject: ObservableObject {
     static var isJa: Bool { Locale.preferredLanguages.first!.hasPrefix("ja") }
     static var isDark: Bool { UITraitCollection.current.userInterfaceStyle == .dark }
     
-    static let hexLetterUppercase: Int = 0
-    static let hexLetterLowercase: Int = 1
+    static let hexLetterLowercase: Int = 0
+    static let hexLetterUppercase: Int = 1
     static let uiStyleStandard: Int = 0
     static let uiStyleKeyboard: Int = 1
     
     var isUpper: Bool { self.appSettingHexLetter == Self.hexLetterUppercase }
     var isStandard: Bool { self.appSettingUIStyle == Self.uiStyleStandard }
+    var isCharsLarge: Bool { self.appSettingCharacterFont == DataScreen.fontLarge }
     
     @Published var appVersion: String = ""
     @Published var deviceWidth: CGFloat = 0.0
@@ -39,19 +40,19 @@ class CalcSharedObject: ObservableObject {
             UserDefaults.standard.set(appSettingSoundEffects, forKey: "appSettingSoundEffects")
         }
     }
-    @Published var appSettingHexLetter: Int = CalcSharedObject.hexLetterUppercase {
+    @Published var appSettingHexLetter: Int = CalculatorSharedObject.hexLetterLowercase {
         didSet {
             UserDefaults.standard.set(appSettingHexLetter, forKey: "appSettingHexLetter")
         }
     }
-    @Published var appSettingUIStyle: Int = CalcSharedObject.uiStyleStandard {
+    @Published var appSettingUIStyle: Int = CalculatorSharedObject.uiStyleStandard {
         didSet {
             UserDefaults.standard.set(appSettingUIStyle, forKey: "appSettingUIStyle")
         }
     }
-    @Published var appSettingInitialMode: Int = CalcCalculator.modeD {
+    @Published var appSettingCharacterFont: Int = DataScreen.fontSmall {
         didSet {
-            UserDefaults.standard.set(appSettingInitialMode, forKey: "appSettingInitialMode")
+            UserDefaults.standard.set(appSettingCharacterFont, forKey: "appSettingCharacterFont")
         }
     }
     
@@ -62,12 +63,12 @@ class CalcSharedObject: ObservableObject {
         }
     }
     init() {
-        CalcUNIXTime.initTime()
+        CalculatorUNIXTime.initTime()
         appSettingIdleTimerDisabled = UserDefaults.standard.bool(forKey: "appSettingIdleTimerDisabled")
         appSettingSoundEffects = UserDefaults.standard.bool(forKey: "appSettingSoundEffects")
         appSettingHexLetter = UserDefaults.standard.integer(forKey: "appSettingHexLetter")
         appSettingUIStyle = UserDefaults.standard.integer(forKey: "appSettingUIStyle")
-        appSettingInitialMode = UserDefaults.standard.integer(forKey: "appSettingInitialMode")
+        appSettingCharacterFont = UserDefaults.standard.integer(forKey: "appSettingCharacterFont")
         if let string = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String { appVersion = string }
         let width = CGFloat(UIScreen.main.bounds.width)
         let height = CGFloat(UIScreen.main.bounds.height)

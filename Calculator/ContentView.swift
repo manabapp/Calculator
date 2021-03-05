@@ -8,22 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var object: CalcSharedObject
+    @EnvironmentObject var object: CalculatorSharedObject
     @State private var selection = 0
 
     var body: some View {
         ZStack {
             TabView(selection: $selection) {
-                CalcCalculator()
+                CalculatorNumeric()
                 .tabItem {
                     VStack {
                         Image(systemName: "square.grid.3x3.bottomright.fill")
-                        Text("Calculator")
+                        Text("Numeric")
                     }
                 }
                 .tag(0)
                 
-                CalcUNIXTime()
+                CalculatorUNIXTime()
                 .tabItem {
                     VStack {
                         Image(systemName: "clock")
@@ -32,7 +32,7 @@ struct ContentView: View {
                 }
                 .tag(1)
                 
-                CalcIPAddress()
+                CalculatorIPAddress()
                 .tabItem {
                     VStack {
                         Image(systemName: "globe")
@@ -41,7 +41,7 @@ struct ContentView: View {
                 }
                 .tag(2)
                 
-                CaclCharacter()
+                CalculatorCharacter()
                 .tabItem {
                     VStack {
                         Image(systemName: "arrow.up.arrow.down")
@@ -50,11 +50,11 @@ struct ContentView: View {
                 }
                 .tag(3)
                 
-                CalcSetting()
+                CalculatorSettings()
                 .tabItem {
                     VStack {
                         Image(systemName: "gearshape.2")
-                        Text("Setting")
+                        Text("Settings")
                     }
                 }
                 .tag(4)

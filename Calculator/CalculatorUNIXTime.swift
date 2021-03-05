@@ -1,5 +1,5 @@
 //
-//  CalcUNIXTime.swift
+//  CalculatorUNIXTime.swift
 //  Calculator
 //
 //  Created by Hirose Manabu on 2021/03/03.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct CalcUNIXTime: View {
-    @EnvironmentObject var object: CalcSharedObject
+struct CalculatorUNIXTime: View {
+    @EnvironmentObject var object: CalculatorSharedObject
     @State var mode: Int = Self.modeLocal
     @State var date: Date = Date(timeIntervalSince1970: 0)
     @State var time: UInt32 = 0
@@ -78,7 +78,7 @@ struct CalcUNIXTime: View {
                         Spacer()
                         Text("Overflow")
                             .font(.system(size: 12, weight: isOverflow ? .bold : .light))
-                            .foregroundColor(isOverflow ? Color.init(.systemRed) : Color.init(CalcSharedObject.isDark ? .darkGray : .lightGray))
+                            .foregroundColor(isOverflow ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
                         Spacer()
                     }
                     
@@ -86,7 +86,7 @@ struct CalcUNIXTime: View {
                     
                     VStack(alignment: .trailing) {
                         Text(NSLocalizedString("Label_TimeZone", comment: "") + formatter.timeZone.identifier)
-                            .foregroundColor(Color.init(CalcSharedObject.isDark ? .lightGray : .darkGray))
+                            .foregroundColor(Color.init(CalculatorSharedObject.isDark ? .lightGray : .darkGray))
                         
                         Text(formatter.string(from: self.date))
                             .font(.system(size: 22))
@@ -135,7 +135,7 @@ struct CalcUNIXTime: View {
                         HStack(spacing: buttonSpace) {
                             Button(action: { copy() }) { HorizontalBbody(t: "Button_Copy", i: "doc.on.doc", c: 3) }
                             Button(action: { paste() }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 3) }
-                            Button(action: { setDate(); self.isShowing.toggle() }) { HorizontalBbody(i: "chevron.compact.up", c: 3, b: .systemBlue) }
+                            Button(action: { setDate(); self.isShowing.toggle() }) { HorizontalBbody(i: "chevron.up", c: 3, b: .systemBlue) }
                         }
                     }
                     .padding(.horizontal, object.isStandard ? 0 : 5)
@@ -218,7 +218,7 @@ struct CalcUNIXTime: View {
                     HStack(spacing: buttonSpace) {
                         Button(action: { copy() }) { HorizontalBbody(t: "Button_Copy", i: "doc.on.doc", c: 3) }
                         Button(action: { paste() }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 3) }
-                        Button(action: { self.isShowing.toggle() }) { HorizontalBbody(i: "chevron.compact.down", c: 3, b: .systemBlue) }
+                        Button(action: { self.isShowing.toggle() }) { HorizontalBbody(i: "chevron.down", c: 3, b: .systemBlue) }
                     }
                     .padding(.horizontal, object.isStandard ? 0 : 5)
                     .padding(.bottom, object.isStandard ? 0 : 5)
@@ -303,7 +303,7 @@ struct CalcUNIXTime: View {
             self.setDate()
             
         default:
-            fatalError("Calc4Calculate.action: unexpected type: \(type)")
+            fatalError("CalculatorUNIXTime.action: unexpected type: \(type)")
         }
         return true
     }

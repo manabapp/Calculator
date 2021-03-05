@@ -1,5 +1,5 @@
 //
-//  CalcCalculator.swift
+//  CalculatorNumeric.swift
 //  Calculator
 //
 //  Created by Hirose Manabu on 2021/03/03.
@@ -45,8 +45,8 @@ let BTYPE_OR: Int = 33
 let BTYPE_XOR: Int = 34
 let BTYPE_ENTER: Int = 35
 
-struct CalcCalculator: View {
-    @EnvironmentObject var object: CalcSharedObject
+struct CalculatorNumeric: View {
+    @EnvironmentObject var object: CalculatorSharedObject
     
     @State var mode: Int = Self.modeD //modeD(Double), modeI(Signed Integer), or modeX(Unsigned Integer)
     @State var lastType: Int = BTYPE_0
@@ -136,17 +136,18 @@ struct CalcCalculator: View {
                 Spacer()
                 Text("Out of range")
                     .font(.system(size: 12, weight: isOutOfRange ? .bold : .light))
-                    .foregroundColor(isOutOfRange ? Color.init(.systemRed) : Color.init(CalcSharedObject.isDark ? .darkGray : .lightGray))
+                    .foregroundColor(isOutOfRange ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
                 Spacer()
                 Text("Overflow")
                     .font(.system(size: 12, weight: isOverflow ? .bold : .light))
-                    .foregroundColor(isOverflow ? Color.init(.systemRed) : Color.init(CalcSharedObject.isDark ? .darkGray : .lightGray))
+                    .foregroundColor(isOverflow ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
                 Spacer()
                 Text("Division by zero")
                     .font(.system(size: 12, weight: isDivisionByZero ? .bold : .light))
-                    .foregroundColor(isDivisionByZero ? Color.init(.systemRed) : Color.init(CalcSharedObject.isDark ? .darkGray : .lightGray))
+                    .foregroundColor(isDivisionByZero ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
                 Spacer()
-            }            /*
+            }
+#if DEBUG
             switch mode {
             case Self.modeD:
                 Text("\(self.isTyping ? 1:0), Result: \(memoryResultD != nil ? String(memoryResultD!) : "nil"), Operand: \(memoryOperandD)")
@@ -155,7 +156,7 @@ struct CalcCalculator: View {
             default: //modeX:
                 Text("\(self.isTyping ? 1:0), Result: \(memoryResultX != nil ? String(memoryResultX!) : "nil"), Operand: \(memoryOperandX)")
             }
-            */
+#endif
             Spacer()
             
             Text(self.console)
@@ -164,7 +165,7 @@ struct CalcCalculator: View {
                 .padding(5)
                 .lineLimit(1)
                 .minimumScaleFactor(0.4)
-
+            
             if isInteger {
                 HStack(spacing: 10) {
                     VStack(spacing: 5) {
@@ -434,7 +435,7 @@ struct CalcCalculator: View {
             guard hasMemoryResult || isTyping else { return false }
             
         default:
-            fatalError("Calc4Calculate.canTyping: unexpected type: \(type)")
+            fatalError("CalculatorNumeric.canTyping: unexpected type: \(type)")
         }
         return true
     }
@@ -568,7 +569,7 @@ struct CalcCalculator: View {
             self.putResult()
             
         default:
-            fatalError("Calc4Calculate.action: unexpected type: \(type)")
+            fatalError("CalculatorNumeric.action: unexpected type: \(type)")
         }
         return true
     }
@@ -586,15 +587,14 @@ struct CalcCalculator: View {
             case BTYPE_MINUS:    value = self.memoryResultD! - memoryOperandD
             case BTYPE_MULTIPLY: value = self.memoryResultD! * memoryOperandD
             case BTYPE_DIVIDE:   value = self.memoryResultD! / memoryOperandD
-            default:             fatalError("Calc4Calculate.calculate: unexpected operator: \(operatorType!)")
+            default:             fatalError("CalculatorNumeric.calculate: unexpected operator: \(op)")
+            }
+            if value.isInfinite || value.isNaN {
+                isDivisionByZero = true
+                return false
             }
             if value < Self.doubleMin || value > Self.doubleMax {
-                if value.isInfinite {
-                    isDivisionByZero = true
-                }
-                else {
-                    isOutOfRange = true
-                }
+                isOutOfRange = true
                 return false
             }
             if value < Self.doublePlusMin && value > Self.doubleMinusMax {
@@ -612,7 +612,7 @@ struct CalcCalculator: View {
             case BTYPE_MULTIPLY:  (value, overflow) = self.memoryResultI!.multipliedReportingOverflow(by: memoryOperandI)
             case BTYPE_DIVIDE:    (value, overflow) = self.memoryResultI!.dividedReportingOverflow(by: memoryOperandI)
             case BTYPE_REMAINDER: (value, overflow) = self.memoryResultI!.remainderReportingOverflow(dividingBy: memoryOperandI)
-            default:              fatalError("Calc4Calculate.calculate: unexpected operator: \(operatorType!)")
+            default:              fatalError("CalculatorNumeric.calculate: unexpected operator: \(op)")
             }
             if overflow {
                 if memoryOperandI == 0 {
@@ -636,7 +636,7 @@ struct CalcCalculator: View {
             case BTYPE_AND:       value = self.memoryResultX! & memoryOperandX
             case BTYPE_OR:        value = self.memoryResultX! | memoryOperandX
             case BTYPE_XOR:       value = self.memoryResultX! ^ memoryOperandX
-            default:              fatalError("Calc4Calculate.calculate: unexpected operator: \(operatorType!)")
+            default:              fatalError("CalculatorNumeric.calculate: unexpected operator: \(op)")
             }
             if overflow {
                 if memoryOperandX == 0 {

@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    @ObservedObject(initialValue: CalcSharedObject()) var object: CalcSharedObject  // ADD 2021/03/03 manabapp
+    @ObservedObject(initialValue: CalculatorSharedObject()) var object: CalculatorSharedObject  // ADD 2021/03/03 manabapp
     var window: UIWindow?
 
 

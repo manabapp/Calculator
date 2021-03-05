@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HorizontalBbody: View {
-    @EnvironmentObject var object: CalcSharedObject
+    @EnvironmentObject var object: CalculatorSharedObject
     var t: LocalizedStringKey? = nil //Label of Text
     var i: String? = nil             //SystemName of Image
     let c: Int                       //Number of column in parent view
@@ -34,7 +34,7 @@ struct HorizontalBbody: View {
         case 736 ..< 812:  Self.height = 36.0; Self.fontSize = 14.4 //Device size 414x736 : iPhone 6s Plus, 7 Plus, 8 Plus
         case 667 ..< 736:  Self.height = 36.0; Self.fontSize = 14.4 //Device size 375x667 : iPhone 6s, 7, 8, SE(2nd Gen)
         case 568 ..< 667:  Self.height = 32.0; Self.fontSize = 12.8 //Device size 320x568 : iPhone SE(1st Gen), iPod touch(7th Gen)
-        default:           assertionFailure("SocTestScreen.initSize: width = \(height)") //0 or Unexpeted
+        default:           assertionFailure("HorizontalBbody.initSize: height = \(height)") //0 or Unexpeted
         }
     }
     

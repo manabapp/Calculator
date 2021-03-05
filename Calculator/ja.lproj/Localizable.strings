@@ -32,8 +32,11 @@ Label_Uppercase = "大文字";
 Label_Lowercase = "小文字";
 Label_Standard_type = "標準タイプ";
 Label_Keyboard_type = "キーボードタイプ";
+Label_Small = "小さいサイズ";
+Label_Large = "大きいサイズ";
 
 Footer_IDLE_TIMER = "計算中にスリープ状態になるのを避けるため、iOS のアイドルタイマーを無効にします。\n";
 Footer_SOUND_EFFECTS = "ボタンをタップしたときにプッシュ音を鳴らします。さらに、エラー時にはバイブレーションを鳴らします。\n";
 Footer_HEXADECIMAL_LETTER = "16 進数におけるアルファベット表記を指定します。\n";
-Footer_UI_Style = "アプリのデザインを選択します。";
+Footer_UI_Style = "アプリのデザインを選択します。\n";
+Footer_CHARACTER_FONT = "Character 機能における表示領域のフォントサイズを選択します。";

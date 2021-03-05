@@ -1,5 +1,5 @@
 //
-//  CalcIPAddress.swift
+//  CalculatorIPAddress.swift
 //  Calculator
 //
 //  Created by Hirose Manabu on 2021/03/03.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct CalcIPAddress: View {
-    @EnvironmentObject var object: CalcSharedObject
+struct CalculatorIPAddress: View {
+    @EnvironmentObject var object: CalculatorSharedObject
     @State var mode: Int = 0
     @State var console: String = ""
     @State var isInvalid: Bool = false
@@ -22,7 +22,7 @@ struct CalcIPAddress: View {
     private var isClear: Bool { self.console.isEmpty }
     private var isAllClear: Bool  { self.isClear && !self.isInvalid && self.netaddr == nil && self.subnetmask == nil && self.broadcast == nil }
     private var hasSlash: Bool { self.console.contains("/") }
-    private var consoleField: Text { self.isClear ? Text("           192.168.10.0/24").foregroundColor(Color.init(CalcSharedObject.isDark ? .darkGray : .lightGray)) : Text(self.console) }
+    private var consoleField: Text { self.isClear ? Text("           192.168.10.0/24").foregroundColor(Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray)) : Text(self.console) }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -37,7 +37,7 @@ struct CalcIPAddress: View {
                 Spacer()
                 Text("Invalid address")
                     .font(.system(size: 12, weight: isInvalid ? .bold : .light))
-                    .foregroundColor(isInvalid ? Color.init(.systemRed) : Color.init(CalcSharedObject.isDark ? .darkGray : .lightGray))
+                    .foregroundColor(isInvalid ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
                 Spacer()
             }
             .padding(.bottom, 5)
@@ -203,7 +203,18 @@ struct CalcIPAddress: View {
         switch type {
         //0123456789012345678901234567890123456789
         case BTYPE_0 ... BTYPE_9:
-            guard self.console.count <= 18 else { return false }
+            guard !self.console.hasSuffix(".0") else { return false }
+            guard !self.console.hasSuffix("/0") else { return false }
+            if hasSlash {
+                let array: [String] = self.console.components(separatedBy: "/")
+                guard let prefixLen = UInt8(array[1] + String(type)) else { return false }
+                guard prefixLen >= 0 && prefixLen <= 32 else { return false }
+            }
+            else {
+                let array: [String] = self.console.components(separatedBy: ".")
+                guard array.count > 0 else { return false }
+                guard let _ = UInt8(array[array.count - 1] + String(type)) else { return false }
+            }
             if self.isClear {
                 self.console = String(type)
             }
@@ -215,6 +226,7 @@ struct CalcIPAddress: View {
         case BTYPE_DOT:
             guard !self.isClear else { return false }
             guard !self.console.hasSuffix(".") else { return false }
+            guard self.console.components(separatedBy: ".").count < 4 else { return false }
             guard !hasSlash else { return false }
             self.console += "."
             
@@ -222,6 +234,7 @@ struct CalcIPAddress: View {
         case BTYPE_SLASH:
             guard !self.isClear else { return false }
             guard !self.console.hasSuffix(".") else { return false }
+            guard self.console.components(separatedBy: ".").count == 4 else { return false }
             guard !hasSlash else { return false }
             self.console += "/"
             
@@ -257,7 +270,7 @@ struct CalcIPAddress: View {
                 netaddr = ipaddr
             }
         default:
-            fatalError("Calc4Calculate.action: unexpected type: \(type)")
+            fatalError("CalculatorIPAddress.action: unexpected type: \(type)")
         }
         return true
     }

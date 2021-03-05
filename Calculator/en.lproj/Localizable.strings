@@ -32,8 +32,11 @@ Label_Uppercase = "Uppercase";
 Label_Lowercase = "Lowercase";
 Label_Standard_type = "Standard type";
 Label_Keyboard_type = "Keyboard type";
+Label_Small = "Small";
+Label_Large = "Large";
 
 Footer_IDLE_TIMER = "To avoid going into sleep mode during calculation, turns off iOS's idle timer.\n";
 Footer_SOUND_EFFECTS = "Makes a push sound when tapping the button. In addition, sounds a vibration when error.\n";
 Footer_HEXADECIMAL_LETTER = "Specifies the alphabetical notation for hexadecimal.\n";
 Footer_UI_Style = "Selects the style of the app's design.\n";
+Footer_CHARACTER_FONT = "Selects the font size of display area in Character feature.";
