@@ -60,7 +60,7 @@ struct ByteField: View {
                         .foregroundColor(Color.init(.white))
                 }
             }
-            Text(String(format: object.isUpper ? "%01X  %01X" : "%01x  %01x", (self.byte >> 4) & 0x0F, self.byte & 0x0F))
+            Text(String(format: object.isUpper ? "%01X %01X" : "%01x %01x", (self.byte >> 4) & 0x0F, self.byte & 0x0F))
                 .font(Font.custom("Courier", size: monospaceFontSize).monospacedDigit()).bold()
                 .foregroundColor(Color.init(.lightGray))
                 .padding(.top, -2)

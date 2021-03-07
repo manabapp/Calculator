@@ -18,7 +18,7 @@ struct ContentView: View {
                 .tabItem {
                     VStack {
                         Image(systemName: "square.grid.3x3.bottomright.fill")
-                        Text("Numeric")
+                        Text("Label_Numeric")
                     }
                 }
                 .tag(0)
@@ -27,7 +27,7 @@ struct ContentView: View {
                 .tabItem {
                     VStack {
                         Image(systemName: "clock")
-                        Text("UNIX Time")
+                        Text("Label_UNIX_Time")
                     }
                 }
                 .tag(1)
@@ -36,16 +36,16 @@ struct ContentView: View {
                 .tabItem {
                     VStack {
                         Image(systemName: "globe")
-                        Text("IP Address")
+                        Text("Label_IP_Address")
                     }
                 }
                 .tag(2)
                 
-                CalculatorCharacter()
+                CalculatorCharacters()
                 .tabItem {
                     VStack {
                         Image(systemName: "arrow.up.arrow.down")
-                        Text("Character")
+                        Text("Label_Characters")
                     }
                 }
                 .tag(3)
@@ -54,7 +54,7 @@ struct ContentView: View {
                 .tabItem {
                     VStack {
                         Image(systemName: "gearshape.2")
-                        Text("Settings")
+                        Text("Label_Settings")
                     }
                 }
                 .tag(4)

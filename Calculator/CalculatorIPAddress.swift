@@ -14,6 +14,7 @@ struct CalculatorIPAddress: View {
     @State var isInvalid: Bool = false
     @State var ipaddr: UInt32 = 0
     @State var netmask: UInt32 = 0
+    @State var prefixlen: Int = 0
     @State var netaddr: UInt32? = nil
     @State var subnetmask: UInt32? = nil //same as netmask
     @State var broadcast: UInt32? = nil
@@ -23,6 +24,37 @@ struct CalculatorIPAddress: View {
     private var isAllClear: Bool  { self.isClear && !self.isInvalid && self.netaddr == nil && self.subnetmask == nil && self.broadcast == nil }
     private var hasSlash: Bool { self.console.contains("/") }
     private var consoleField: Text { self.isClear ? Text("           192.168.10.0/24").foregroundColor(Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray)) : Text(self.console) }
+    
+    
+    private var prefixLen: Int {
+        guard var netmask = self.subnetmask else {
+            return 0
+        }
+        var len: Int = 0
+        while netmask > 0 {
+            netmask <<= 1
+            len += 1
+        }
+        return len
+    }
+    private func addressField(label: LocalizedStringKey, addr: UInt32?, prefix: String = "") -> some View {
+        return HStack {
+            Text(label)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(Color.init(UIColor.systemGray))
+            Spacer()
+            if let address = addr {
+                Text(String.init(cString: inet_ntoa(in_addr(s_addr: address.bigEndian))) + prefix)
+                    .font(.system(size: 16))
+            }
+            else {
+                Text("0.0.0.0" + prefix)
+                    .font(.system(size: 16))
+                    .foregroundColor(Color.init(UIColor.systemGray))
+            }
+        }
+        .padding(.horizontal, 10)
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -35,58 +67,17 @@ struct CalculatorIPAddress: View {
             
             HStack {
                 Spacer()
-                Text("Invalid address")
+                Text("Address invalid")
                     .font(.system(size: 12, weight: isInvalid ? .bold : .light))
                     .foregroundColor(isInvalid ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
                 Spacer()
             }
             .padding(.bottom, 5)
             
-            if let address = self.netaddr {
-                HStack {
-                    Text("Label_Network_Address")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(Color.init(UIColor.systemGray))
-                    Spacer()
-                    Text(String.init(cString: inet_ntoa(in_addr(s_addr: address.bigEndian))))
-                        .font(.system(size: 16))
-                }
-                .padding(.horizontal, 10)
-                
-                HStack {
-                    Text("Label_Subnet_Mask")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(Color.init(UIColor.systemGray))
-                    Spacer()
-                    if let address = self.subnetmask {
-                        Text(String.init(cString: inet_ntoa(in_addr(s_addr: address.bigEndian))))
-                            .font(.system(size: 16))
-                    }
-                    else {
-                        Text("0.0.0.0")
-                            .font(.system(size: 16))
-                            .foregroundColor(Color.init(UIColor.systemGray))
-                    }
-                }
-                .padding(.horizontal, 10)
-                
-                HStack {
-                    Text("Label_Broadcast_Address")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(Color.init(UIColor.systemGray))
-                    Spacer()
-                    if let address = self.broadcast {
-                        Text(String.init(cString: inet_ntoa(in_addr(s_addr: address.bigEndian))))
-                            .font(.system(size: 16))
-                    }
-                    else {
-                        Text("0.0.0.0")
-                            .font(.system(size: 16))
-                            .foregroundColor(Color.init(UIColor.systemGray))
-                    }
-                }
-                .padding(.horizontal, 10)
-            }
+            addressField(label: "Label_CIDR", addr: self.netaddr, prefix: "/\(prefixLen)")
+            addressField(label: "Label_Subnet_Mask", addr: self.subnetmask)
+            addressField(label: "Label_Network_Address", addr: prefixLen >= 31 ? nil : self.netaddr)
+            addressField(label: "Label_Broadcast_Address", addr: prefixLen >= 31 ? nil : self.broadcast)
             
             Spacer()
             self.consoleField
@@ -159,12 +150,12 @@ struct CalculatorIPAddress: View {
             return
         }
         var ipAddr: String = self.console
-        var prefixLen: Int = 0
+        var prefixlen = 0
         if hasSlash {
             let array: [String] = self.console.components(separatedBy: "/")
             ipAddr = array[0]
             if let num = Int(array[1]) {
-                prefixLen = num
+                prefixlen = num
             }
         }
         let array: [String] = ipAddr.components(separatedBy: ".")
@@ -188,8 +179,8 @@ struct CalculatorIPAddress: View {
                 ipaddr += UInt32(octet)
             }
         }
-        if prefixLen > 0 && prefixLen <= 32 {
-            netmask = UInt32(0xffffffff) << (32 - prefixLen)
+        if prefixlen > 0 && prefixlen <= 32 {
+            netmask = UInt32(0xffffffff) << (32 - prefixlen)
         }
     }
     
@@ -203,6 +194,7 @@ struct CalculatorIPAddress: View {
         switch type {
         //0123456789012345678901234567890123456789
         case BTYPE_0 ... BTYPE_9:
+            guard self.console != "0" else { return false }
             guard !self.console.hasSuffix(".0") else { return false }
             guard !self.console.hasSuffix("/0") else { return false }
             if hasSlash {
@@ -255,20 +247,28 @@ struct CalculatorIPAddress: View {
             
         //========================================
         case BTYPE_ENTER:
-            let address = self.console
-            guard address.isValidCidrFormat || address.isValidIPv4Format else {
+            isInvalid = false
+            netaddr = nil
+            subnetmask = nil
+            broadcast = nil
+            guard !isClear else { return false }
+            if !hasSlash {
+                guard self.console.isValidIPv4Format else {
+                    object.sound(isError: true)
+                    isInvalid = true
+                    return false
+                }
+                return true
+            }
+            guard self.console.isValidCidrFormat else {
                 object.sound(isError: true)
                 isInvalid = true
                 return false
             }
-            if hasSlash {
-                netaddr = ipaddr & netmask
-                subnetmask = netmask
-                broadcast = netaddr! | ~netmask
-            }
-            else {
-                netaddr = ipaddr
-            }
+            netaddr = ipaddr & netmask
+            subnetmask = netmask
+            broadcast = netaddr! | ~netmask
+            
         default:
             fatalError("CalculatorIPAddress.action: unexpected type: \(type)")
         }

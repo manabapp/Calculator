@@ -17,6 +17,14 @@ struct CalculatorSettings: View {
     
     var body: some View {
         List {
+            Section(header: Text("UI STYLE").font(.system(size: 16, weight: .semibold)),
+                    footer: Text("Footer_UI_STYLE").font(.system(size: 12))) {
+                Picker("", selection: self.$object.appSettingUIStyle) {
+                    Text("Label_Standard_type").tag(CalculatorSharedObject.uiStyleStandard)
+                    Text("Label_Keyboard_type").tag(CalculatorSharedObject.uiStyleKeyboard)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+            }
             Section(header: Text("IDLE TIMER").font(.system(size: 16, weight: .semibold)),
                     footer: Text("Footer_IDLE_TIMER").font(.system(size: 12))) {
                 Toggle(isOn: self.$object.appSettingIdleTimerDisabled) {
@@ -37,17 +45,9 @@ struct CalculatorSettings: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
             }
-            Section(header: Text("UI STYLE").font(.system(size: 16, weight: .semibold)),
-                    footer: Text("Footer_UI_Style").font(.system(size: 12))) {
-                Picker("", selection: self.$object.appSettingUIStyle) {
-                    Text("Label_Standard_type").tag(CalculatorSharedObject.uiStyleStandard)
-                    Text("Label_Keyboard_type").tag(CalculatorSharedObject.uiStyleKeyboard)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-            }
-            Section(header: Text("CHARACTER FONT").font(.system(size: 16, weight: .semibold)),
+            Section(header: Text("CHARACTERS FONT").font(.system(size: 16, weight: .semibold)),
                     footer: VStack(alignment: .leading) {
-                        Text("Footer_CHARACTER_FONT").font(.system(size: 12)).padding(.bottom, 50)
+                        Text("Footer_CHARACTERS_FONT").font(.system(size: 12)).padding(.bottom, 50)
                         AboutApp()
                     }) {
                 Picker("", selection: self.$object.appSettingCharacterFont) {

@@ -16,10 +16,9 @@
 
 <p>
 
-4 is not mean much, but not just a calculator.<br>
-( <font color=red>Preparing now</font> )
+Dear IoT engineers, Let's set this app to default calculator!<br>
+( <font color=red>Reviewing in Apple Inc.</font> )
 
-<!--
 <div class="yoko">
     <div><img class="screenshotimg" src="img/ScreenShot1.jpeg" alt="image1" width=276px height=597px></div>
     <div><img class="screenshotimg" src="img/ScreenShot2.jpeg" alt="image2" width=276px height=597px></div>
@@ -30,25 +29,48 @@
     <div><img class="screenshotimg" src="img/ScreenShot7.jpeg" alt="image7" width=276px height=597px></div>
     <div><img class="screenshotimg" src="img/ScreenShot8.jpeg" alt="image8" width=276px height=597px></div>
     <div><img class="screenshotimg" src="img/ScreenShot9.jpeg" alt="image9" width=276px height=597px></div>
-    <div><img class="screenshotimg" src="img/ScreenShot10.jpeg" alt="image10" width=276px height=597px></div>
 </div>
 
 <p>
--->
+
 <div id="p1">
     <a onclick="showDescription();">Learn more</a>
 </div>
 <div id="p2">
     <a onclick="hideDescription();">Hide text</a><br>
     <p align="left">
-    Culcurator4 is a calculator that combines what I wish I had.<br>
-    Each one is not a big deal, I think this is good enough!<br>
-    
+    Calculator is an app developed for IoT engineers such as programmer and systems engineer.<br>
+    All of data handled by IoT is represented in binary format (0 and 1).<br>
+    This app calculates typical data such as "<b>numeric</b>", "<b>UNIX time</b>", "<b>IP address</b>", and "<b>characters</b>" and displays the data as bit array or hexadecimal dumps.
     <ul align="left">
-        <li>Calculation suppoting hexadecimal</li>
-        <li>Conversion an UNIX epoch time</li>
-        <li>Conversion UTF-8 String to hex</li>
-        <li>Calculation CIDR of IPv4 address</li>
+        <span class="functions">Numeric</span><br>
+        Selects the type of numerical value from "Decimal floating point number Double", "Decimal signed Int", and "Hexadecimal un-signed Int".<br>
+        Double can handle up to 15 digits (including up to 10 decimal places). <br>
+        Int can handle numerical values within the range of 64 bits, and in addition to the four rules operations, modulo operations and various bit operations are possible. <br><br>
+        
+        <span class="functions">UNIX Time</span><br>
+        Converts the number of seconds elapsed since UNIX epoch, and gregorian date time to each other. <br>
+        The date time are displayed in either local time or Coordinated Universal Time. <br>
+        You can enter date time with the current time, the boundaries of the year 2038/2106 problems, and the calendar.<br><br>
+        
+        <span class="functions">IP Address</span><br>
+        Calculates the network address, subnet mask, and broadcast address from the IPv4 CIDR format. <br>
+        The IPv6 address format will be supported in the next version.<br><br>
+        
+        <span class="functions">Characters</span><br>
+        Converts the entered character string to binary data (up to 64 KB), and displays in hexadecimal dump. <br>
+        The encoding of multibyte code in character string data is UTF-8 (other character encodings are not supported). <br>
+        In addition, a binary data can be edited with an binary editor and can be converted back to a character string. <br><br>
+    </ul>
+    <p align="left">
+    Notes for numeric:<br>
+    <ul align="left">
+    <li>Priority of all operators are as same, and always evaluate from the beginning (ex. 3 + 2 * 2 = 10).</li>
+    <li>The overflow operation (is a operation that truncates the overflow / underflow part) is not performed, and an operation that results in overflow is canceled as an error (<font color=red>Overflow</font>).</li>
+    <li>Division and modulo operation by 0 are canceled as errors (<font color=red>Division by zero</font>).</li>
+    <li>Exponential notation (eg. 1.234e+16) is not supported in Double type. Therefore, the calculation is performed within the range of 15 digits, which is the number of effective digits of double(64-bit) precision (Reference: IEEE 754). The number of effective digits in the decimal part is the 10th place.</li>
+    <li>In Double type, an operation that results greater than 999999999999999 (or less than -999999999999999) are canceled as an error (<font color=red>Out of range</font>).</li>
+    <li>In Double type, an operation that results in a positive number less than 0.0000000001 (or a negative number greater than -0.0000000001) do not result in an error, and the result is zero.</li>
     </ul>
     </p>
     <a onclick="hideDescription();">Hide text</a>

@@ -130,7 +130,7 @@ struct CalculatorUNIXTime: View {
                         }
                         HStack(spacing: buttonSpace) {
                             Button(action: { tap(BTYPE_0) }) { Bbody(t: "0", c: 5, w: 3) }
-                            Button(action: { tap(BTYPE_NOW) }) { Bbody(t: "Now", c: 5, w: 2, b: .lightGray, f: .black) }
+                            Button(action: { tap(BTYPE_NOW) }) { Bbody(t: "now", c: 5, w: 2, b: .lightGray, f: .black) }
                         }
                         HStack(spacing: buttonSpace) {
                             Button(action: { copy() }) { HorizontalBbody(t: "Button_Copy", i: "doc.on.doc", c: 3) }
@@ -146,7 +146,7 @@ struct CalculatorUNIXTime: View {
                 VStack(spacing: 0) {
                     HStack(spacing: buttonSpace) {
                         Button(action: { tap(BTYPE_CLEAR) }) { HorizontalBbody(t: "C", c: 4, b: .lightGray, f: .black) }
-                        Button(action: { tap(BTYPE_NOW) }) { HorizontalBbody(t: "Now", c: 4, b: .lightGray, f: .black) }
+                        Button(action: { tap(BTYPE_NOW) }) { HorizontalBbody(t: "now", c: 4, b: .lightGray, f: .black) }
                         Button(action: { tap(BTYPE_2038) }) { HorizontalBbody(t: "2038", c: 4, b: .lightGray, f: .black) }
                         Button(action: { tap(BTYPE_2106) }) { HorizontalBbody(t: "2106", c: 4, b: .lightGray, f: .black) }
                     }
@@ -235,6 +235,7 @@ struct CalculatorUNIXTime: View {
     
     private func tap(_ type: Int) {
         if self.action(type) {
+            self.isOverflow = false
             object.sound()
         }
     }
@@ -330,7 +331,11 @@ struct CalculatorUNIXTime: View {
             return
         }
         if let value = UInt32(text) {
+            self.isOverflow = false
             self.console = String(format: "%lld", value)
+            self.time = value
+            self.date = Date(timeIntervalSince1970: Double(self.time))
+            self.setDate()
             object.sound()
         }
     }
@@ -355,6 +360,7 @@ struct CalculatorUNIXTime: View {
             object.sound(isError: true)
             return
         }
+        self.isOverflow = false
         self.date = calDate
         self.time = UInt32(self.date.timeIntervalSince1970)
         self.console = String(self.time)

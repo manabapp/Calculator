@@ -12,13 +12,13 @@ class CalculatorSharedObject: ObservableObject {
     static var isJa: Bool { Locale.preferredLanguages.first!.hasPrefix("ja") }
     static var isDark: Bool { UITraitCollection.current.userInterfaceStyle == .dark }
     
-    static let hexLetterLowercase: Int = 0
-    static let hexLetterUppercase: Int = 1
     static let uiStyleStandard: Int = 0
     static let uiStyleKeyboard: Int = 1
+    static let hexLetterLowercase: Int = 0
+    static let hexLetterUppercase: Int = 1
     
-    var isUpper: Bool { self.appSettingHexLetter == Self.hexLetterUppercase }
     var isStandard: Bool { self.appSettingUIStyle == Self.uiStyleStandard }
+    var isUpper: Bool { self.appSettingHexLetter == Self.hexLetterUppercase }
     var isCharsLarge: Bool { self.appSettingCharacterFont == DataScreen.fontLarge }
     
     @Published var appVersion: String = ""
@@ -29,6 +29,11 @@ class CalculatorSharedObject: ObservableObject {
     @Published var alertDetail: String = ""
     @Published var isPopAlert: Bool = false
     
+    @Published var appSettingUIStyle: Int = CalculatorSharedObject.uiStyleStandard {
+        didSet {
+            UserDefaults.standard.set(appSettingUIStyle, forKey: "appSettingUIStyle")
+        }
+    }
     @Published var appSettingIdleTimerDisabled: Bool = false {
         didSet {
             UserDefaults.standard.set(appSettingIdleTimerDisabled, forKey: "appSettingIdleTimerDisabled")
@@ -45,11 +50,6 @@ class CalculatorSharedObject: ObservableObject {
             UserDefaults.standard.set(appSettingHexLetter, forKey: "appSettingHexLetter")
         }
     }
-    @Published var appSettingUIStyle: Int = CalculatorSharedObject.uiStyleStandard {
-        didSet {
-            UserDefaults.standard.set(appSettingUIStyle, forKey: "appSettingUIStyle")
-        }
-    }
     @Published var appSettingCharacterFont: Int = DataScreen.fontSmall {
         didSet {
             UserDefaults.standard.set(appSettingCharacterFont, forKey: "appSettingCharacterFont")
@@ -64,10 +64,10 @@ class CalculatorSharedObject: ObservableObject {
     }
     init() {
         CalculatorUNIXTime.initTime()
+        appSettingUIStyle = UserDefaults.standard.integer(forKey: "appSettingUIStyle")
         appSettingIdleTimerDisabled = UserDefaults.standard.bool(forKey: "appSettingIdleTimerDisabled")
         appSettingSoundEffects = UserDefaults.standard.bool(forKey: "appSettingSoundEffects")
         appSettingHexLetter = UserDefaults.standard.integer(forKey: "appSettingHexLetter")
-        appSettingUIStyle = UserDefaults.standard.integer(forKey: "appSettingUIStyle")
         appSettingCharacterFont = UserDefaults.standard.integer(forKey: "appSettingCharacterFont")
         if let string = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String { appVersion = string }
         let width = CGFloat(UIScreen.main.bounds.width)

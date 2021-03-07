@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CalculatorCharacter: View {
+struct CalculatorCharacters: View {
     @EnvironmentObject var object: CalculatorSharedObject
     @State var mode: Int = 0
     @State var data = Data([])
@@ -146,6 +146,7 @@ struct CalculatorCharacter: View {
 
     private func convertA2X() {
         guard !isClearA else { return }
+        self.isInvalid = false
         let before = Array(self.asciiText)
         var after: String = ""
         let length = before.count

@@ -16,9 +16,9 @@
 
 <p>
 
-科学計算や税率計算なんて必要ありません！<br>
-（<font color=red>準備中</font>）
-<!--
+IoT 技術者のみなさん、このアプリを規定の電卓に設定しましょう！<br>
+（<font color=red>Apple 社で審査中</font>）
+
 <div class="yoko">
     <div><img class="screenshotimg" src="img/ScreenShot1_ja.jpeg" alt="image1" width=276px height=597px></div>
     <div><img class="screenshotimg" src="img/ScreenShot2_ja.jpeg" alt="image2" width=276px height=597px></div>
@@ -29,36 +29,48 @@
     <div><img class="screenshotimg" src="img/ScreenShot7_ja.jpeg" alt="image7" width=276px height=597px></div>
     <div><img class="screenshotimg" src="img/ScreenShot8_ja.jpeg" alt="image8" width=276px height=597px></div>
     <div><img class="screenshotimg" src="img/ScreenShot9_ja.jpeg" alt="image9" width=276px height=597px></div>
-    <div><img class="screenshotimg" src="img/ScreenShot10_ja.jpeg" alt="image10" width=276px height=597px></div>
 </div>
 
 <p>
--->
+
 <div id="p1">
     <a onclick="showDescription();">さらに詳しく</a>
 </div>
 <div id="p2">
     <a onclick="hideDescription();">説明を隠す</a><br>
     <p align="left">
-    Calcurator は、プログラマーやシステムエンジニアなどの IoT 技術者のために開発された計算機アプリです。<br>
-    ソフトウェアで扱うあらゆるデータはバイナリ形式（0 と 1 の 2 進数）として表現されます。<br>
-    この計算機は、代表的なデータである「数値」「時間」「IP アドレス」「文字列」を計算し、データをビット列や 16 進ダンプで表示します。
+    Calculator は、プログラマーやシステムエンジニアなどの IoT 技術者のために開発された計算機アプリです。<br>
+    IoT で扱うあらゆるデータはバイナリ形式（0 と 1 の 2 進数）として表現されます。<br>
+    このアプリは、代表的なデータである「<b>数値</b>」「<b>UNIX 時間</b>」「<b>IP アドレス</b>」「<b>文字列</b>」を計算し、ビット列や 16 進ダンプで表示します。
     <ul align="left">
-        <li>64 bit 電卓</li>
-        数値の型を「10 進数 Double」「10 進数 Signed Int」「16 進数 Unsigned Int」から選択できます。
-        Double では、最大 15 桁（内、小数は第 10 位まで）まで扱えます。Int では、64 bit の範囲内の数値を扱えます。
-        四則演算に加え、剰余演算(%)および各種ビット演算が可能です。
-        <li>UNIX 時間の変換</li>
-        UNIX エポックからの経過秒数と日時（西暦）を相互に変換します。
-        日時は、ローカル時間と協定世界時のどちらかで表示します。
-        2038 年問題と 2106 年問題の境界値および現在時刻の指定やカレンダーによる指定も可能です。
-        <li>IP アドレスの計算</li>
-        IPv4 の CIDR 形式からネットワークアドレス、サブネットマスク、および ブロードキャストアドレスを算出します。
-        （注：IPv6 は未対応です。次期バージョンで対応予定。）
-        <li>文字列の変換</li>
-        入力した文字列データを 16 進ダンプ表示します。
-        文字列データにおけるマルチバイトコードのエンコーディングは UTF-8 です（注：UTF-8 以外の文字コードは未対応です）。
-        また、16 進データはバイナリエディタで編集可能であり、文字列データに変換することもできます。
+        <span class="functions">数値計算（Numeric）</span><br>
+        数値の型を「10 進数 浮動小数点 Double」「10 進数 符号付き Int」「16 進数 符号無し Int」から選択します。<br>
+        Double では、最大 15 桁（内、小数は第 10 位まで）まで扱うことができます。<br>
+        Int では、64 bit の範囲内の数値を扱うことができ、四則演算に加え、剰余演算および各種ビット演算が可能です。<br><br>
+        
+        <span class="functions">時間変換（UNIX Time）</span><br>
+        UNIX エポックからの経過秒数と日時（西暦）を相互に変換します。<br>
+        日時は、ローカル時間と協定世界時のいずれかで表示します。<br>
+        現在時刻、2038/2106 年問題の境界値、および カレンダー指定による入力も可能です。<br><br>
+        
+        <span class="functions">アドレス計算（IP Address）</span><br>
+        IPv4 の CIDR 形式からネットワークアドレス、サブネットマスク、および ブロードキャストアドレスを算出します。<br>
+        IPv6 アドレス形式は、次期バージョンで対応予定です。<br><br>
+        
+        <span class="functions">文字列変換（Characters）</span><br>
+        入力した文字列データ（最大 64 KB）をバイナリに変換し、16 進ダンプ表示します。<br>
+        文字列データにおけるマルチバイトコードのエンコーディングは UTF-8 です（その他の文字コードは未対応）。<br>
+        また、バイナリデータをエディタで編集可能であり、文字列に逆変換することも可能です。<br><br>
+    </ul>
+    <p align="left">
+    数値計算の留意事項<br>
+    <ul align="left">
+    <li>演算子の優先順位はすべて同じであり、常に先頭から評価します（例：3 + 2 * 2 = 10）。</li>
+    <li>オーバーフロー演算（オーバーフロー/アンダーフロー部分を切り捨てる演算）は行わず、結果がオーバーフローとなる演算はエラー（<font color=red>Overflow</font>）としてキャンセルされます。</li>
+    <li>0 による除算および剰余演算はエラー（<font color=red>Division by zero</font>）としてキャンセルされます。</li>
+    <li>Double 型の計算において指数表示（例：1.234e+16）には対応していません。そのため、64 bit 精度の有効桁数である 15 桁の範囲内で計算を行います（参考: IEEE 754）。なお、小数部の有効桁数は第 10 位です。</li>
+    <li>Double 型の計算において、結果が 999999999999999 を超える（または、-999999999999999 を下回る）演算はエラー（<font color=red>Out of range</font>）としてキャンセルされます。</li>
+    <li>Double 型の計算において、結果が 0.0000000001 より小さな正数（または、-0.0000000001 より大きな負数）となる演算はエラーとはせず、結果を 0 とします。</li>
     </ul>
     </p>
     <a onclick="hideDescription();">説明を隠す</a>
