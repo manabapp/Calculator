@@ -161,32 +161,42 @@ struct CalculatorNumeric: View {
             
             Text(self.console)
                 .frame(maxWidth: .infinity, alignment: .bottomTrailing)
-                .font(isHex ? Font.custom("Courier", size: 64.0).monospacedDigit() : .system(size: 64))
+                .font(isHex ? Font.custom("Menlo", size: 64.0) : .system(size: 64))
                 .padding(5)
                 .lineLimit(1)
                 .minimumScaleFactor(0.4)
             
-            if isInteger {
-                HStack(spacing: 10) {
-                    VStack(spacing: 5) {
-                        ByteField(byte: self.isHex ? UInt8(self.consoleX >> 56 & 0xFF) : UInt8(self.consoleI >> 56 & 0xFF), label: "56")
-                        ByteField(byte: self.isHex ? UInt8(self.consoleX >> 24 & 0xFF) : UInt8(self.consoleI >> 24 & 0xFF), label: "24")
+            Button(action: { object.byteFieldsSwitch.toggle() }) {
+                if object.byteFieldsSwitch {
+                    HStack(spacing: 10) {
+                        VStack(spacing: 5) {
+                            ByteField(byte: self.getByte(7), label: "56")
+                            ByteField(byte: self.getByte(3), label: "24")
+                        }
+                        VStack(spacing: 5) {
+                            ByteField(byte: self.getByte(6), label: "48")
+                            ByteField(byte: self.getByte(2), label: "16")
+                        }
+                        VStack(spacing: 5) {
+                            ByteField(byte: self.getByte(5), label: "40")
+                            ByteField(byte: self.getByte(1), label:  "8")
+                        }
+                        VStack(spacing: 5) {
+                            ByteField(byte: self.getByte(4), label: "32")
+                            ByteField(byte: self.getByte(0), label:  "0")
+                        }
                     }
-                    VStack(spacing: 5) {
-                        ByteField(byte: self.isHex ? UInt8(self.consoleX >> 48 & 0xFF) : UInt8(self.consoleI >> 48 & 0xFF), label: "48")
-                        ByteField(byte: self.isHex ? UInt8(self.consoleX >> 16 & 0xFF) : UInt8(self.consoleI >> 16 & 0xFF), label: "16")
-                    }
-                    VStack(spacing: 5) {
-                        ByteField(byte: self.isHex ? UInt8(self.consoleX >> 40 & 0xFF) : UInt8(self.consoleI >> 40 & 0xFF), label: "40")
-                        ByteField(byte: self.isHex ? UInt8(self.consoleX >>  8 & 0xFF) : UInt8(self.consoleI >>  8 & 0xFF), label:  "8")
-                    }
-                    VStack(spacing: 5) {
-                        ByteField(byte: self.isHex ? UInt8(self.consoleX >> 32 & 0xFF) : UInt8(self.consoleI >> 32 & 0xFF), label: "32")
-                        ByteField(byte: self.isHex ? UInt8(self.consoleX >>  0 & 0xFF) : UInt8(self.consoleI >>  0 & 0xFF), label:  "0")
-                    }
+                    .frame(width: object.deviceWidth, height: ByteField.height2, alignment: .center)
+                    .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
                 }
-                .frame(width: object.deviceWidth, height: ByteField.height2, alignment: .center)
-                .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                else {
+                    Image(systemName: "chevron.compact.up")
+                        .font(.system(size: 20, weight: .semibold))
+                        .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
+                        .foregroundColor(Color.init(.lightGray))
+                        .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                        .cornerRadius(object.isStandard ? 0 : 8)
+                }
             }
             
             VStack(spacing: buttonSpace) {
@@ -268,6 +278,31 @@ struct CalculatorNumeric: View {
         }
     }
     
+    private func getByte(_ offset: Int) -> UInt8 {
+        switch mode {
+        case Self.modeD:
+            let data = Data(bytes: &self.consoleD, count: 8)
+            let bytes = [UInt8](data)
+            return bytes[offset]
+        case Self.modeI:
+            let value = self.consoleI >> (8 * offset)
+            return UInt8(value & 0xFF)
+        default: //modeX:
+            let value = self.consoleX >> (8 * offset)
+            return UInt8(value & 0xFF)
+        /*
+        case Self.modeI:
+            let data = Data(bytes: &self.consoleI, count: 8)
+            let bytes = [UInt8](data)
+            return bytes[offset]
+        default: //modeX:
+            let data = Data(bytes: &self.consoleX, count: 8)
+            let bytes = [UInt8](data)
+            return bytes[offset]
+         */
+        }
+    }
+    
     private func putResult() {
         switch self.mode {
         case Self.modeD:
@@ -290,18 +325,18 @@ struct CalculatorNumeric: View {
             guard var value = Double(self.console) else { return }
             if value.isNaN { value = 0.0 }
             consoleD = value
-            consoleI = Int64(value)
-            consoleX = value >= 0 ? UInt64(value) : 0
+            consoleI = (value < Double(Int64.min) || value > Double(Int64.max)) ? 0 : Int64(value)
+            consoleX = (value < 0 || value > Double(UInt64.max)) ? 0 : UInt64(value)
         case Self.modeI:
             guard let value = Int64(self.console) else { return }
             consoleI = value
-            consoleD = Double(value)
-            consoleX = value >= 0 ? UInt64(value) : 0
+            consoleD = (value < Int64(Self.doubleMin) || value > Int64(Self.doubleMax)) ? 0.0 : Double(value)
+            consoleX = value < 0 ? 0 : UInt64(value)
         default: //modeX:
             guard let value = UInt64(self.console, radix: 16) else { return }
             consoleX = value
-            consoleD = Double(value)
-            consoleI = value <= UInt64(Int64.max) ? Int64(value) : 0
+            consoleD = value > UInt64(Self.doubleMax) ? 0.0 : Double(value)
+            consoleI = value > UInt64(Int64.max) ? 0 : Int64(value)
         }
     }
     private func setOperand() {
@@ -310,18 +345,18 @@ struct CalculatorNumeric: View {
             guard var value = Double(self.console) else { return }
             if value.isNaN { value = 0.0 }
             memoryOperandD = value
-            memoryOperandI = Int64(value)
-            memoryOperandX = value >= 0 ? UInt64(value) : 0
+            memoryOperandI = (value < Double(Int64.min) || value > Double(Int64.max)) ? 0 : Int64(value)
+            memoryOperandX = (value < 0 || value > Double(UInt64.max)) ? 0 : UInt64(value)
         case Self.modeI:
             guard let value = Int64(self.console) else { return }
             memoryOperandI = value
-            memoryOperandD = Double(value)
-            memoryOperandX = value >= 0 ? UInt64(value) : 0
+            memoryOperandD = (value < Int64(Self.doubleMin) || value > Int64(Self.doubleMax)) ? 0.0 : Double(value)
+            memoryOperandX = value < 0 ? 0 : UInt64(value)
         default: //modeX:
             guard let value = UInt64(self.console, radix: 16) else { return }
             memoryOperandX = value
-            memoryOperandD = Double(value)
-            memoryOperandI = value <= UInt64(Int64.max) ? Int64(value) : 0
+            memoryOperandD = value > UInt64(Self.doubleMax) ? 0.0 : Double(value)
+            memoryOperandI = value > UInt64(Int64.max) ? 0 : Int64(value)
         }
     }
     private func setResult() {
@@ -330,18 +365,18 @@ struct CalculatorNumeric: View {
             guard var value = Double(self.console) else { return }
             if value.isNaN { value = 0.0 }
             memoryResultD = value
-            memoryResultI = Int64(value)
-            memoryResultX = value >= 0 ? UInt64(value) : 0
+            memoryResultI = (value < Double(Int64.min) || value > Double(Int64.max)) ? 0 : Int64(value)
+            memoryResultX = (value < 0 || value > Double(UInt64.max)) ? 0 : UInt64(value)
         case Self.modeI:
             guard let value = Int64(self.console) else { return }
             memoryResultI = value
-            memoryResultD = Double(value)
-            memoryResultX = value >= 0 ? UInt64(value) : 0
+            memoryResultD = (value < Int64(Self.doubleMin) || value > Int64(Self.doubleMax)) ? 0.0 : Double(value)
+            memoryResultX = value < 0 ? 0 : UInt64(value)
         default: //modeX:
             guard let value = UInt64(self.console, radix: 16) else { return }
             memoryResultX = value
-            memoryResultD = Double(value)
-            memoryResultI = value <= UInt64(Int64.max) ? Int64(value) : 0
+            memoryResultD = value > UInt64(Self.doubleMax) ? 0.0 : Double(value)
+            memoryResultI = value > UInt64(Int64.max) ? 0 : Int64(value)
         }
     }
     private func copyResult() {
@@ -366,12 +401,12 @@ struct CalculatorNumeric: View {
     }
     
     private func canTyping(_ type: Int) -> Bool {
-        if type == BTYPE_0 {
-            if self.isClear {
+        if self.isClear || self.console == "-0" {
+            if type == BTYPE_0 {
                 return false
             }
-            if self.console == "-0" {
-                return false
+            if type <= BTYPE_F {
+                return true
             }
         }
         if !self.isTyping && type < BTYPE_DELETE {
@@ -449,8 +484,16 @@ struct CalculatorNumeric: View {
         switch type {
         //0123456789012345678901234567890123456789
         case BTYPE_0 ... BTYPE_9:
-            if self.isTyping && !self.isClear {
-                self.console += String(type)
+            if self.isTyping {
+                if self.isClear {
+                    self.console = String(type)
+                }
+                else if self.console == "-0" {
+                    self.console = "-" + String(type)
+                }
+                else {
+                    self.console += String(type)
+                }
             }
             else {
                 self.console = String(type)
@@ -467,12 +510,7 @@ struct CalculatorNumeric: View {
             
         //........................................
         case BTYPE_DOT:
-            if self.isTyping && !self.isClear {
-                self.console += "."
-            }
-            else {
-                self.console = "0."
-            }
+            self.console += "."
             
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         case BTYPE_NOT:

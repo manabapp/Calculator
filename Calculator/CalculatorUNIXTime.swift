@@ -99,21 +99,34 @@ struct CalculatorUNIXTime: View {
                     .frame(maxWidth: .infinity, alignment: .bottomTrailing)
                     .padding(5)
                     
-                    HStack(spacing: 10) {
-                        ByteField(byte: UInt8(self.time >> 24 & 0xFF), label: "24")
-                        ByteField(byte: UInt8(self.time >> 16 & 0xFF), label: "16")
-                        ByteField(byte: UInt8(self.time >>  8 & 0xFF), label:  "8")
-                        ByteField(byte: UInt8(self.time >>  0 & 0xFF), label:  "0")
+                    Button(action: { object.byteFieldsSwitch.toggle() }) {
+                        if object.byteFieldsSwitch {
+                            HStack(spacing: 10) {
+                                ByteField(byte: UInt8(self.time >> 24 & 0xFF), label: "24")
+                                ByteField(byte: UInt8(self.time >> 16 & 0xFF), label: "16")
+                                ByteField(byte: UInt8(self.time >>  8 & 0xFF), label:  "8")
+                                ByteField(byte: UInt8(self.time >>  0 & 0xFF), label:  "0")
+                            }
+                            .frame(width: object.deviceWidth, height: ByteField.height1, alignment: .center)
+                            .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                        }
+                        else {
+                            Image(systemName: "chevron.compact.up")
+                                .font(.system(size: 20, weight: .semibold))
+                                .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
+                                .foregroundColor(Color.init(.lightGray))
+                                .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                                .cornerRadius(object.isStandard ? 0 : 8)
+                        }
+
                     }
-                    .frame(width: object.deviceWidth, height: ByteField.height1, alignment: .center)
-                    .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
                     
                     VStack(spacing: buttonSpace) {
                         HStack(spacing: buttonSpace) {
                             Button(action: { tap(BTYPE_7) }) { Bbody(t: "7", c: 5) }
                             Button(action: { tap(BTYPE_8) }) { Bbody(t: "8", c: 5) }
                             Button(action: { tap(BTYPE_9) }) { Bbody(t: "9", c: 5) }
-                            Button(action: { tap(BTYPE_CLEAR) }) { Bbody(t: "C", c: 5, w: 2, b: .lightGray, f: .black) }
+                            Button(action: { tap(BTYPE_CLEAR) }) { Bbody(t: "AC", c: 5, w: 2, b: .lightGray, f: .black) }
                         }
                         HStack(spacing: buttonSpace) {
                             Button(action: { tap(BTYPE_4) }) { Bbody(t: "4", c: 5) }
@@ -145,7 +158,7 @@ struct CalculatorUNIXTime: View {
                 
                 VStack(spacing: 0) {
                     HStack(spacing: buttonSpace) {
-                        Button(action: { tap(BTYPE_CLEAR) }) { HorizontalBbody(t: "C", c: 4, b: .lightGray, f: .black) }
+                        Button(action: { tap(BTYPE_CLEAR) }) { HorizontalBbody(t: "AC", c: 4, b: .lightGray, f: .black) }
                         Button(action: { tap(BTYPE_NOW) }) { HorizontalBbody(t: "now", c: 4, b: .lightGray, f: .black) }
                         Button(action: { tap(BTYPE_2038) }) { HorizontalBbody(t: "2038", c: 4, b: .lightGray, f: .black) }
                         Button(action: { tap(BTYPE_2106) }) { HorizontalBbody(t: "2106", c: 4, b: .lightGray, f: .black) }

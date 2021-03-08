@@ -28,6 +28,7 @@ class CalculatorSharedObject: ObservableObject {
     @Published var alertMessage: String = ""
     @Published var alertDetail: String = ""
     @Published var isPopAlert: Bool = false
+    @Published var byteFieldsSwitch: Bool = true
     
     @Published var appSettingUIStyle: Int = CalculatorSharedObject.uiStyleStandard {
         didSet {

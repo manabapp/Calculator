@@ -16,7 +16,7 @@
 
 <p>
 
-Dear IoT engineers, Let's set this app to default calculator!<br>
+Let's set this app to default calculator.<br>
 ( <font color=red>Reviewing in Apple Inc.</font> )
 
 <div class="yoko">
@@ -41,16 +41,21 @@ Dear IoT engineers, Let's set this app to default calculator!<br>
     <p align="left">
     Calculator is an app developed for IoT engineers such as programmer and systems engineer.<br>
     All of data handled by IoT is represented in binary format (0 and 1).<br>
-    This app calculates typical data such as "<b>numeric</b>", "<b>UNIX time</b>", "<b>IP address</b>", and "<b>characters</b>" and displays the data as bit array or hexadecimal dumps.
+    This app calculates typical data such as "<b>Numeric</b>", "<b>UNIX time</b>", "<b>IP Address</b>", and "<b>Characters</b>" and displays the data as bit array or hexadecimal dumps.
     <ul align="left">
         <span class="functions">Numeric</span><br>
-        Selects the type of numerical value from "Decimal floating point number Double", "Decimal signed Int", and "Hexadecimal un-signed Int".<br>
+        Selects the type of numerical value from the following types:
+        <ul>
+            <li>Decimal / Double floating point (<b>Double</b>)</li>
+            <li>Decimal / 64 bit Signed integer (<b>Int64</b>)</li>
+            <li>Hexadecimal / Un-signed integer (<b>UInt64</b>)</li>
+        </ul>
         Double can handle up to 15 digits (including up to 10 decimal places). <br>
-        Int can handle numerical values within the range of 64 bits, and in addition to the four rules operations, modulo operations and various bit operations are possible. <br><br>
+        Int64/UInt64 can handle numerical values within the range of 64 bits, and in addition to the four basic arithmetic operations, modulo operations and various bit operations are possible. <br><br>
         
         <span class="functions">UNIX Time</span><br>
         Converts the number of seconds elapsed since UNIX epoch, and gregorian date time to each other. <br>
-        The date time are displayed in either local time or Coordinated Universal Time. <br>
+        The date time are displayed in either local time or Coordinated Universal Time (UTC). <br>
         You can enter date time with the current time, the boundaries of the year 2038/2106 problems, and the calendar.<br><br>
         
         <span class="functions">IP Address</span><br>
@@ -59,17 +64,18 @@ Dear IoT engineers, Let's set this app to default calculator!<br>
         
         <span class="functions">Characters</span><br>
         Converts the entered character string to binary data (up to 64 KB), and displays in hexadecimal dump. <br>
-        The encoding of multibyte code in character string data is UTF-8 (other character encodings are not supported). <br>
-        In addition, a binary data can be edited with an binary editor and can be converted back to a character string. <br><br>
+        In addition, a binary data can be edited with an binary editor and can be converted back to a character string. <br>
+        The encoding of multibyte code in character string data is UTF-8 (other character encodings are not supported). <br><br>
     </ul>
     <p align="left">
     Notes for numeric:<br>
     <ul align="left">
     <li>Priority of all operators are as same, and always evaluate from the beginning (ex. 3 + 2 * 2 = 10).</li>
-    <li>The overflow operation (is a operation that truncates the overflow / underflow part) is not performed, and an operation that results in overflow is canceled as an error (<font color=red>Overflow</font>).</li>
-    <li>Division and modulo operation by 0 are canceled as errors (<font color=red>Division by zero</font>).</li>
-    <li>Exponential notation (eg. 1.234e+16) is not supported in Double type. Therefore, the calculation is performed within the range of 15 digits, which is the number of effective digits of double(64-bit) precision (Reference: IEEE 754). The number of effective digits in the decimal part is the 10th place.</li>
-    <li>In Double type, an operation that results greater than 999999999999999 (or less than -999999999999999) are canceled as an error (<font color=red>Out of range</font>).</li>
+    <li>The overflow operation (is a operation that truncates the overflow / underflow part) is not performed, and an operation that results in overflow is canceled.</li>
+    <li>Division and modulo operation by 0 are canceled.</li>
+    <li>Exponential notation (eg. 1.234e+16) is not supported in Double type. Therefore, the calculation is performed within the range of 15 digits, which is the number of effective digits of double precision. The number of effective digits in the decimal part is the 10th place.</li>
+    <li>Bit array of Double type is displayed in double-precision IEEE 754 format.</li>
+    <li>In Double type, an operation that results greater than 999999999999999 (or less than -999999999999999) are canceled.</li>
     <li>In Double type, an operation that results in a positive number less than 0.0000000001 (or a negative number greater than -0.0000000001) do not result in an error, and the result is zero.</li>
     </ul>
     </p>
@@ -85,7 +91,7 @@ Dear IoT engineers, Let's set this app to default calculator!<br>
 
 <!-- refer: https://qiita.com/macoril/items/48125b2a0a48339b3693 -->
 <!-- refer: https://developer.apple.com/jp/app-store/marketing/guidelines/ -->
-<a href="https://itunes.apple.com/app/idXXXXXXXXXX?mt=8"><img src="img/AppStore_US.svg"></a><br>
+<a href="https://itunes.apple.com/app/id1557098658?mt=8"><img src="img/AppStore_US.svg"></a><br>
 <span class="trademarks">Apple, the Apple logo are registered trademarks of Apple Inc.</span>
 
 <p>

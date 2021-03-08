@@ -13,6 +13,15 @@ struct DataScreen: UIViewRepresentable {
     @Binding var isEditable: Bool
     @Binding var isDecodable: Bool
     
+    let onEditingChanged: (Bool) -> Void
+    
+    init(text: Binding<String>, isEditable: Binding<Bool>, isDecodable: Binding<Bool>, onEditingChanged: @escaping (Bool) -> Void = {_ in}) {
+        self._text = text
+        self._isEditable = isEditable
+        self._isDecodable = isDecodable
+        self.onEditingChanged = onEditingChanged
+    }
+    
     static let fontSmall: Int = 0
     static let fontLarge: Int = 1
     
@@ -77,34 +86,48 @@ struct DataScreen: UIViewRepresentable {
         myTextArea.keyboardType = .asciiCapable
         myTextArea.isEditable = isEditable
         myTextArea.delegate = context.coordinator
-        myTextArea.font = isDecodable ? UIFont(name: "Courier", size: DataScreen.fontSize * fontRate) : UIFont.boldSystemFont(ofSize: (DataScreen.fontSize + 1.0) * fontRate)
+        myTextArea.font = isDecodable ? UIFont(name: "Menlo", size: DataScreen.fontSize * fontRate) : UIFont.boldSystemFont(ofSize: (DataScreen.fontSize + 1.0) * fontRate)
         myTextArea.textAlignment = isDecodable ? .left : .center
         myTextArea.backgroundColor = UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)
         myTextArea.textColor = UIColor.white
+        myTextArea.text = text
         return myTextArea
     }
     
     func updateUIView(_ uiView: UITextView, context: Context) {
-        uiView.text = text
-        uiView.isEditable = isEditable
-        uiView.font = isDecodable ? UIFont(name: "Courier", size: DataScreen.fontSize * fontRate) : UIFont.boldSystemFont(ofSize: (DataScreen.fontSize + 1.0) * fontRate)
-        uiView.textAlignment = isDecodable ? .left : .center
+        if uiView.text != text {
+            uiView.text = text
+            uiView.isEditable = isEditable
+            uiView.font = isDecodable ? UIFont(name: "Menlo", size: DataScreen.fontSize * fontRate) : UIFont.boldSystemFont(ofSize: (DataScreen.fontSize + 1.0) * fontRate)
+            uiView.textAlignment = isDecodable ? .left : .center
+        }
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(self)
+        Coordinator(self, onEditingChanged: onEditingChanged)
     }
     
     class Coordinator : NSObject, UITextViewDelegate {
         var parent: DataScreen
+        let onEditingChanged: (Bool) -> Void
         
-        init(_ uiTextView: DataScreen) {
+        init(_ uiTextView: DataScreen, onEditingChanged: @escaping (Bool) -> Void = {_ in}) {
             self.parent = uiTextView
+            self.onEditingChanged = onEditingChanged
         }
         
         func textViewDidChange(_ textView: UITextView) {
             self.parent.text = textView.text
             self.parent.isEditable = textView.isEditable
         }
+        
+        func textViewDidBeginEditing(_ textView: UITextView) {
+            onEditingChanged(true)
+        }
+
+        func textViewDidEndEditing(_ textView: UITextView) {
+            onEditingChanged(false)
+        }
+
     }
 }

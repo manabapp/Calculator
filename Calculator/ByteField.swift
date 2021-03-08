@@ -52,16 +52,16 @@ struct ByteField: View {
                 HStack(spacing: 5) {
                     Text(Self.bitPattern[Int(self.byte >> 4 & 0x0F)])
                         .kerning(1)
-                        .font(Font.custom("Courier", size: monospaceFontSize).monospacedDigit())
+                        .font(Font.custom("Courier", size: monospaceFontSize))
                         .foregroundColor(Color.init(.white))
                     Text(Self.bitPattern[Int(self.byte & 0x0F)])
                         .kerning(1)
-                        .font(Font.custom("Courier", size: monospaceFontSize).monospacedDigit())
+                        .font(Font.custom("Courier", size: monospaceFontSize))
                         .foregroundColor(Color.init(.white))
                 }
             }
             Text(String(format: object.isUpper ? "%01X %01X" : "%01x %01x", (self.byte >> 4) & 0x0F, self.byte & 0x0F))
-                .font(Font.custom("Courier", size: monospaceFontSize).monospacedDigit()).bold()
+                .font(Font.custom("Menlo", size: Self.fontSize))
                 .foregroundColor(Color.init(.lightGray))
                 .padding(.top, -2)
         }

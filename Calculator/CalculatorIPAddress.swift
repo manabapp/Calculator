@@ -87,29 +87,41 @@ struct CalculatorIPAddress: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.4)
             
-            VStack(spacing: 5) {
-                HStack(spacing: 10) {
-                    ByteField(byte: UInt8(ipaddr >> 24 & 0xFF), label: "24")
-                    ByteField(byte: UInt8(ipaddr >> 16 & 0xFF), label: "16")
-                    ByteField(byte: UInt8(ipaddr >>  8 & 0xFF), label:  "8")
-                    ByteField(byte: UInt8(ipaddr >>  0 & 0xFF), label:  "0")
+            Button(action: { object.byteFieldsSwitch.toggle() }) {
+                if object.byteFieldsSwitch {
+                    VStack(spacing: 5) {
+                        HStack(spacing: 10) {
+                            ByteField(byte: UInt8(ipaddr >> 24 & 0xFF), label: "24")
+                            ByteField(byte: UInt8(ipaddr >> 16 & 0xFF), label: "16")
+                            ByteField(byte: UInt8(ipaddr >>  8 & 0xFF), label: "8")
+                            ByteField(byte: UInt8(ipaddr >>  0 & 0xFF), label: "0")
+                        }
+                        HStack(spacing: 10) {
+                            ByteField(byte: UInt8(netmask >> 24 & 0xFF), label: "")
+                            ByteField(byte: UInt8(netmask >> 16 & 0xFF), label: "")
+                            ByteField(byte: UInt8(netmask >>  8 & 0xFF), label: "")
+                            ByteField(byte: UInt8(netmask >>  0 & 0xFF), label: "netmask")
+                        }
+                    }
+                    .frame(width: object.deviceWidth, height: ByteField.height2, alignment: .center)
+                    .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
                 }
-                HStack(spacing: 10) {
-                    ByteField(byte: UInt8(netmask >> 24 & 0xFF), label: "")
-                    ByteField(byte: UInt8(netmask >> 16 & 0xFF), label: "")
-                    ByteField(byte: UInt8(netmask >>  8 & 0xFF), label:  "")
-                    ByteField(byte: UInt8(netmask >>  0 & 0xFF), label: "netmask")
+                else {
+                    Image(systemName: "chevron.compact.up")
+                        .font(.system(size: 20, weight: .semibold))
+                        .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
+                        .foregroundColor(Color.init(.lightGray))
+                        .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                        .cornerRadius(object.isStandard ? 0 : 8)
                 }
             }
-            .frame(width: object.deviceWidth, height: ByteField.height2, alignment: .center)
-            .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
             
             VStack(spacing: buttonSpace) {
                 HStack(spacing: buttonSpace) {
                     Button(action: { tap(BTYPE_7) }) { Bbody(t: "7", c: 5) }
                     Button(action: { tap(BTYPE_8) }) { Bbody(t: "8", c: 5) }
                     Button(action: { tap(BTYPE_9) }) { Bbody(t: "9", c: 5) }
-                    Button(action: { tap(BTYPE_CLEAR) }) { Bbody(t: "C", c: 5, w: 2, b: .lightGray, f: .black) }
+                    Button(action: { tap(BTYPE_CLEAR) }) { Bbody(t: "AC", c: 5, w: 2, b: .lightGray, f: .black) }
                 }
                 HStack(spacing: buttonSpace) {
                     VStack(spacing: buttonSpace) {

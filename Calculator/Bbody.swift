@@ -49,7 +49,7 @@ struct Bbody: View {
                 .frame(width: buttonWidth * CGFloat(w) + buttonSpace * CGFloat(w - 1),
                        height: buttonHeight * CGFloat(h) + buttonSpace * CGFloat(h - 1),
                        alignment: .center)
-                .font(m ? Font.custom("Courier", size: monospaceFontSize).monospacedDigit().bold() : .system(size: Self.fontSize, weight: .semibold))
+                .font(m ? Font.custom("Menlo", size: Self.fontSize).bold() : .system(size: Self.fontSize, weight: .semibold))
                 .foregroundColor(Color.init(f))
                 .background(Color.init(b))
                 .cornerRadius(object.isStandard ? 0 : buttonWidth / 4)

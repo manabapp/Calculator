@@ -30,6 +30,10 @@ struct CalculatorCharacters: View {
     private var isClearX: Bool { self.hexText.isEmpty && self.data.count == 0 && !self.isInvalid && !self.isTooLarge }
     private var isClearA: Bool { self.asciiText.isEmpty && self.isAsciiEditable && self.isAsciiDecodable }
     
+    func update(changed: Bool) {
+        guard !changed else { return }
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             Picker("", selection: self.$mode) {
@@ -67,11 +71,11 @@ struct CalculatorCharacters: View {
             
             VStack(spacing: buttonSpace) {
                 HStack(spacing: 0) {
-                    DataScreen(text: self.$indexText, isEditable: self.$isOtherEditable, isDecodable: self.$isOtherDecodable)
+                    DataScreen(text: self.$indexText, isEditable: self.$isOtherEditable, isDecodable: self.$isOtherDecodable, onEditingChanged: update)
                         .frame(width: object.isCharsLarge ? DataScreen.editorIndexWidth2 : DataScreen.editorIndexWidth)
-                    DataScreen(text: self.$hexText, isEditable: self.$isHexEditable, isDecodable: self.$isHexDecodable)
+                    DataScreen(text: self.$hexText, isEditable: self.$isHexEditable, isDecodable: self.$isHexDecodable, onEditingChanged: update)
                         .frame(width: object.isCharsLarge ? DataScreen.editorHexWidth2 : DataScreen.editorHexWidth)
-                    DataScreen(text: self.$charsText, isEditable: self.$isOtherEditable, isDecodable: self.$isOtherDecodable)
+                    DataScreen(text: self.$charsText, isEditable: self.$isOtherEditable, isDecodable: self.$isOtherDecodable, onEditingChanged: update)
                         .frame(width: object.isCharsLarge ? DataScreen.editorCharsWidth2 : DataScreen.editorCharsWidth)
                 }
                 
@@ -116,7 +120,7 @@ struct CalculatorCharacters: View {
             .padding(.bottom, 8)
                 
             VStack(spacing: buttonSpace) {
-                DataScreen(text: self.$asciiText, isEditable: self.$isAsciiEditable, isDecodable: self.$isAsciiDecodable)
+                DataScreen(text: self.$asciiText, isEditable: self.$isAsciiEditable, isDecodable: self.$isAsciiDecodable, onEditingChanged: update)
                     .padding(.top, -5)
                     .padding(.leading, 0)
                 
