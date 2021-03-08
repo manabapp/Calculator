@@ -67,15 +67,21 @@ Let's set this app to default calculator.<br>
     The encoding of multibyte code in character string data is UTF-8 (other character encodings are not supported). <br><br>
     
     <br>
-    <u>Notes for numeric:</u><br>
+    <u>Specification / notes for numeric:</u><br>
     <ul align="left">
     <li>Priority of all operators are as same, and always evaluate from the beginning (ex. 3 + 2 * 2 = 10).</li>
     <li>The overflow operation (is a operation that truncates the overflow / underflow part) is not performed, and an operation that results in overflow is canceled.</li>
     <li>Division and modulo operation by 0 are canceled.</li>
-    <li>Exponential notation (eg. 1.234e+16) is not supported in Double type. Therefore, the calculation is performed within the range of 15 digits, which is the number of effective digits of double precision. The number of effective digits in the decimal part is the 10th place.</li>
-    <li>Bit array of Double type is displayed in double-precision IEEE 754 format.</li>
+    <li>In Double type, doesn't use exponential notation (eg. 1.234e+16). Therefore, the calculation is performed within the range of 15 digits, which is the number of effective digits of double precision.</li>
+    <li>The effective digits in the decimal part of double type is the 10th place.</li>
     <li>In Double type, an operation that results greater than 999999999999999 (or less than -999999999999999) are canceled.</li>
     <li>In Double type, an operation that results in a positive number less than 0.0000000001 (or a negative number greater than -0.0000000001) do not result in an error, and the result is zero.</li>
+    <li>Bit array of Double type is displayed in double-precision IEEE 754 format.</li>
+    <li>If you switch the type of numeric value, the memory will be cleared.</li>
+    <li>When switching from Double to Int64 or UInt64, the decimal part is truncated.</li>
+    <li>When switching from Double or Int64 to UInt64, a negative value will be 0.</li>
+    <li>When switching from Int64 or UInt64 to Double, a value greater than 9999999999999999 (or less than -999999999999999) will be 0.0.</li>
+    <li>When switching from UInt64 to Int64, the value above the maximum value of Int64 (2 to the 63rd power -1) will be 0.</li>
     </ul>
     </p>
     <a onclick="hideDescription();">Hide text</a>

@@ -113,23 +113,17 @@ struct CalculatorNumeric: View {
             .padding(.horizontal, 1)
             .onChange(of: mode) { mode in
                 switch mode {
-                case Self.modeD:
-                    self.console = String(format: "%15.10F", consoleD).trimmingCharacters(in: .whitespacesAndNewlines).strReplace
-                    if let op = self.operatorType {
-                        if op >= BTYPE_REMAINDER {
-                            self.operatorType = nil
-                        }
-                    }
-                case Self.modeI:
-                    self.console = String(format: "%lld", consoleI)
-                    if let op = self.operatorType {
-                        if op >= BTYPE_AND {
-                            self.operatorType = nil
-                        }
-                    }
-                default: //modeX:
-                    self.console = String(format: object.isUpper ? "%llX" : "%llx", consoleX)
+                case Self.modeD: self.console = String(format: "%15.10F", consoleD).trimmingCharacters(in: .whitespacesAndNewlines).strReplace
+                case Self.modeI: self.console = String(format: "%lld", consoleI)
+                default:         self.console = String(format: object.isUpper ? "%llX" : "%llx", consoleX)
                 }
+                self.memoryResultD = nil
+                self.memoryResultI = nil
+                self.memoryResultX = nil
+                self.operatorType = nil
+                self.memoryOperandD = 0.0
+                self.memoryOperandI = 0
+                self.memoryOperandX = 0
             }
             
             HStack {
@@ -290,36 +284,10 @@ struct CalculatorNumeric: View {
         default: //modeX:
             let value = self.consoleX >> (8 * offset)
             return UInt8(value & 0xFF)
-        /*
-        case Self.modeI:
-            let data = Data(bytes: &self.consoleI, count: 8)
-            let bytes = [UInt8](data)
-            return bytes[offset]
-        default: //modeX:
-            let data = Data(bytes: &self.consoleX, count: 8)
-            let bytes = [UInt8](data)
-            return bytes[offset]
-         */
         }
     }
     
-    private func putResult() {
-        switch self.mode {
-        case Self.modeD:
-            if let value = self.memoryResultD {
-                self.console = String(format: "%15.10F", value).trimmingCharacters(in: .whitespacesAndNewlines).strReplace
-            }
-        case Self.modeI:
-            if let value = self.memoryResultI {
-                self.console = String(format: "%lld", value)
-            }
-        default: //modeX:
-            if let value = self.memoryResultX {
-                self.console = String(format: object.isUpper ? "%llX" : "%llx", value)
-            }
-        }
-    }
-    private func syncConsole() {
+    private func setConsole() {
         switch self.mode {
         case Self.modeD:
             guard var value = Double(self.console) else { return }
@@ -339,6 +307,7 @@ struct CalculatorNumeric: View {
             consoleI = value > UInt64(Int64.max) ? 0 : Int64(value)
         }
     }
+    
     private func setOperand() {
         switch self.mode {
         case Self.modeD:
@@ -359,6 +328,7 @@ struct CalculatorNumeric: View {
             memoryOperandI = value > UInt64(Int64.max) ? 0 : Int64(value)
         }
     }
+    
     private func setResult() {
         switch self.mode {
         case Self.modeD:
@@ -379,15 +349,22 @@ struct CalculatorNumeric: View {
             memoryResultI = value > UInt64(Int64.max) ? 0 : Int64(value)
         }
     }
-    private func copyResult() {
-        self.memoryResultD = memoryOperandD
-        self.memoryResultI = memoryOperandI
-        self.memoryResultX = memoryOperandX
-    }
-    private func zeroResult() {
-        self.memoryResultD = 0.0
-        self.memoryResultI = 0
-        self.memoryResultX = 0
+    
+    private func putResult() {
+        switch self.mode {
+        case Self.modeD:
+            if let value = self.memoryResultD {
+                self.console = String(format: "%15.10F", value).trimmingCharacters(in: .whitespacesAndNewlines).strReplace
+            }
+        case Self.modeI:
+            if let value = self.memoryResultI {
+                self.console = String(format: "%lld", value)
+            }
+        default: //modeX:
+            if let value = self.memoryResultX {
+                self.console = String(format: object.isUpper ? "%llX" : "%llx", value)
+            }
+        }
     }
     
     private func tap(_ type: Int) {
@@ -396,7 +373,7 @@ struct CalculatorNumeric: View {
             let ret = self.action(type)
             object.sound(isError: !ret)
         }
-        self.syncConsole()
+        self.setConsole()
         self.lastType = willAllClear ? BTYPE_0 : type
     }
     
@@ -585,7 +562,9 @@ struct CalculatorNumeric: View {
                     }
                 }
                 else {
-                    self.copyResult()
+                    self.memoryResultD = memoryOperandD
+                    self.memoryResultI = memoryOperandI
+                    self.memoryResultX = memoryOperandX
                 }
                 self.putResult()
             }
@@ -716,7 +695,7 @@ struct CalculatorNumeric: View {
             if let value = Double(text) {
                 if !value.isNaN && value >= Self.doubleMin && value <= Self.doubleMax {
                     self.console = String(format: "%15.10F", value).trimmingCharacters(in: .whitespacesAndNewlines).strReplace
-                    self.syncConsole()
+                    self.setConsole()
                     self.lastType = BTYPE_0
                     object.sound()
                 }
@@ -724,14 +703,14 @@ struct CalculatorNumeric: View {
         case Self.modeI:
             if let value = Int64(text) {
                 self.console = String(format: "%lld", value)
-                self.syncConsole()
+                self.setConsole()
                 self.lastType = BTYPE_0
                 object.sound()
             }
         default: //modeX:
             if let value = UInt64(text, radix: 16) {
                 self.console = String(format: object.isUpper ? "%llX" : "%llx", value)
-                self.syncConsole()
+                self.setConsole()
                 self.lastType = BTYPE_0
                 object.sound()
             }
