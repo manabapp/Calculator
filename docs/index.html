@@ -41,34 +41,32 @@ Let's set this app to default calculator.<br>
     <p align="left">
     Calculator is an app developed for IoT engineers such as programmer and systems engineer.<br>
     All of data handled by IoT is represented in binary format (0 and 1).<br>
-    This app calculates typical data such as "<b>Numeric</b>", "<b>UNIX time</b>", "<b>IP Address</b>", and "<b>Characters</b>" and displays the data as bit array or hexadecimal dumps.
-    <ul align="left">
-        <span class="functions">Numeric</span><br>
-        Selects the type of numerical value from the following types:
-        <ul>
-            <li>Decimal / Double floating point (<b>Double</b>)</li>
-            <li>Decimal / 64 bit Signed integer (<b>Int64</b>)</li>
-            <li>Hexadecimal / Un-signed integer (<b>UInt64</b>)</li>
-        </ul>
-        Double can handle up to 15 digits (including up to 10 decimal places). <br>
-        Int64/UInt64 can handle numerical values within the range of 64 bits, and in addition to the four basic arithmetic operations, modulo operations and various bit operations are possible. <br><br>
-        
-        <span class="functions">UNIX Time</span><br>
-        Converts the number of seconds elapsed since UNIX epoch, and gregorian date time to each other. <br>
-        The date time are displayed in either local time or Coordinated Universal Time (UTC). <br>
-        You can enter date time with the current time, the boundaries of the year 2038/2106 problems, and the calendar.<br><br>
-        
-        <span class="functions">IP Address</span><br>
-        Calculates the network address, subnet mask, and broadcast address from the IPv4 CIDR format. <br>
-        The IPv6 address format will be supported in the next version.<br><br>
-        
-        <span class="functions">Characters</span><br>
-        Converts the entered character string to binary data (up to 64 KB), and displays in hexadecimal dump. <br>
-        In addition, a binary data can be edited with an binary editor and can be converted back to a character string. <br>
-        The encoding of multibyte code in character string data is UTF-8 (other character encodings are not supported). <br><br>
-    </ul>
-    <p align="left">
-    Notes for numeric:<br>
+    This app calculates typical data such as "<b>Numeric</b>", "<b>UNIX time</b>", "<b>IP Address</b>", and "<b>Characters</b>" and displays the data as bit array or hexadecimal dumps.<br><br>
+
+    <span class="functions">Numeric</span><br>
+    Selects the type of numerical value from the following types:<br>
+    &nbsp;&nbsp;- Decimal / Double floating point (<b>Double</b>)<br>
+    &nbsp;&nbsp;- Decimal / 64 bit Signed integer (<b>Int64</b>)<br>
+    &nbsp;&nbsp;- Hexadecimal / Un-signed integer (<b>UInt64</b>)<br>
+    Double can handle up to 15 digits (including up to 10 decimal places). <br>
+    Int64/UInt64 can handle numerical values within the range of 64 bits, and in addition to the four basic arithmetic operations, modulo operations and various bit operations are possible. <br><br>
+    
+    <span class="functions">UNIX Time</span><br>
+    Converts the number of seconds elapsed since UNIX epoch, and gregorian date time to each other. <br>
+    The date time are displayed in either local time or Coordinated Universal Time (UTC). <br>
+    You can enter date time with the current time, the boundaries of the year 2038/2106 problems, and the calendar.<br><br>
+    
+    <span class="functions">IP Address</span><br>
+    Calculates the network address, subnet mask, and broadcast address from the IPv4 CIDR format. <br>
+    The IPv6 address format will be supported in the next version.<br><br>
+    
+    <span class="functions">Characters</span><br>
+    Converts the entered character string to binary data (up to 64 KB), and displays in hexadecimal dump. <br>
+    In addition, a binary data can be edited with an binary editor and can be converted back to a character string. <br>
+    The encoding of multibyte code in character string data is UTF-8 (other character encodings are not supported). <br><br>
+    
+    <br>
+    <u>Notes for numeric:</u><br>
     <ul align="left">
     <li>Priority of all operators are as same, and always evaluate from the beginning (ex. 3 + 2 * 2 = 10).</li>
     <li>The overflow operation (is a operation that truncates the overflow / underflow part) is not performed, and an operation that results in overflow is canceled.</li>

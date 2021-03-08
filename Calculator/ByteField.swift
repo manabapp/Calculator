@@ -36,7 +36,7 @@ struct ByteField: View {
         case 844 ..< 896:  Self.height1 = 74.0; Self.height2 = 117.0 //Device size 390x844 : iPhone 12, 12 Pro
         case 812 ..< 844:  Self.height1 = 72.0; Self.height2 = 114.0 //Device size 375x812 : iPhone X, XS, 11 Pro  /  375x812 : iPhone 12 mini
         case 736 ..< 812:  Self.height1 = 76.0; Self.height2 = 120.0 //Device size 414x736 : iPhone 6s Plus, 7 Plus, 8 Plus
-        case 667 ..< 736:  Self.height1 = 70.0; Self.height2 = 110.0 //Device size 375x667 : iPhone 6s, 7, 8, SE(2nd Gen)
+        case 667 ..< 736:  Self.height1 = 68.0; Self.height2 = 98.0 //Device size 375x667 : iPhone 6s, 7, 8, SE(2nd Gen)
         case 568 ..< 667:  Self.height1 = 50.0; Self.height2 = 80.0 //Device size 320x568 : iPhone SE(1st Gen), iPod touch(7th Gen)
         default:           assertionFailure("ByteField.initSize: height = \(height)") //0 or Unexpeted
         }
