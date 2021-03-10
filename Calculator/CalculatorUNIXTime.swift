@@ -9,7 +9,6 @@ import SwiftUI
 
 struct CalculatorUNIXTime: View {
     @EnvironmentObject var object: CalculatorSharedObject
-    @State var mode: Int = Self.modeLocal
     @State var date: Date = Date(timeIntervalSince1970: 0)
     @State var time: UInt32 = 0
     @State var console: String = "0"
@@ -45,6 +44,9 @@ struct CalculatorUNIXTime: View {
         formatterLocal.timeStyle = .medium
     }
     
+    private var mode: Int { object.unixTimeMode }
+    private var consoleString: String { self.console.replacingOccurrences(of:",", with:"") }
+    private var time2String: String { object.appSetting1000Separator ? String.localizedStringWithFormat("%lld", self.time) : String(format: "%lld", self.time) }
     private var isClear: Bool { self.console == "0" }
     private var isAllClear: Bool  { self.isClear && self.time == 0 && !self.isOverflow }
     private var isLocal: Bool { self.mode == Self.modeLocal }
@@ -58,19 +60,19 @@ struct CalculatorUNIXTime: View {
     private var pickerWidthYear: CGFloat { 60.0 }
     private var pickerWidth: CGFloat { (object.deviceWidth - self.pickerWidthYear - 8.0 * 5 - 5.0 * 11) / 5 }
     private var pickersHeight: CGFloat { self.inputsHeight - HorizontalBbody.height * 2 - (object.isStandard ? 0.0 : 5.0) }
-
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 VStack(spacing: 0) {
-                    Picker("", selection: self.$mode) {
+                    Picker("", selection: self.$object.unixTimeMode) {
                         Text("Label_Local_Time").tag(Self.modeLocal)
                         Text("Label_UTC").tag(Self.modeUTC)
                     }
                     .frame(height: 32)
                     .pickerStyle(SegmentedPickerStyle())
                     .padding(.horizontal, 1)
-                    .onChange(of: mode) { _ in
+                    .onChange(of: object.unixTimeMode) { _ in
                         setDate()
                     }
                     
@@ -89,7 +91,10 @@ struct CalculatorUNIXTime: View {
                             .foregroundColor(Color.init(CalculatorSharedObject.isDark ? .lightGray : .darkGray))
                         
                         Text(formatter.string(from: self.date))
-                            .font(.system(size: 22))
+                            .font(.system(size: 24))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.4)
+                            .padding(.bottom, 10)
 
                         Text(self.console)
                             .font(.system(size: 64))
@@ -99,8 +104,16 @@ struct CalculatorUNIXTime: View {
                     .frame(maxWidth: .infinity, alignment: .bottomTrailing)
                     .padding(5)
                     
-                    Button(action: { object.byteFieldsSwitch.toggle() }) {
-                        if object.byteFieldsSwitch {
+                    Button(action: { object.byteFieldsClosed.toggle() }) {
+                        if object.byteFieldsClosed {
+                            Image(systemName: "chevron.compact.up")
+                                .font(.system(size: 20, weight: .semibold))
+                                .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
+                                .foregroundColor(Color.init(.lightGray))
+                                .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                                .cornerRadius(object.isStandard ? 0 : 8)
+                        }
+                        else {
                             HStack(spacing: 10) {
                                 ByteField(byte: UInt8(self.time >> 24 & 0xFF), label: "24")
                                 ByteField(byte: UInt8(self.time >> 16 & 0xFF), label: "16")
@@ -110,15 +123,6 @@ struct CalculatorUNIXTime: View {
                             .frame(width: object.deviceWidth, height: ByteField.height1, alignment: .center)
                             .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
                         }
-                        else {
-                            Image(systemName: "chevron.compact.up")
-                                .font(.system(size: 20, weight: .semibold))
-                                .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
-                                .foregroundColor(Color.init(.lightGray))
-                                .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
-                                .cornerRadius(object.isStandard ? 0 : 8)
-                        }
-
                     }
                     
                     VStack(spacing: buttonSpace) {
@@ -250,6 +254,8 @@ struct CalculatorUNIXTime: View {
         if self.action(type) {
             self.isOverflow = false
             object.sound()
+//            self.console = String.localizedStringWithFormat("%lld", self.time)
+            self.console = self.time2String
         }
     }
     private func action(_ type: Int) -> Bool {
@@ -257,20 +263,17 @@ struct CalculatorUNIXTime: View {
         //0123456789012345678901234567890123456789
         case BTYPE_0:
             guard !isClear else { return false }
-            guard let t = UInt32(self.console + String(type)) else { return false }
+            guard let t = UInt32(self.consoleString + String(type)) else { return false }
             self.time = t
             self.date = Date(timeIntervalSince1970: Double(self.time))
-            self.console += String(type)
             
         case BTYPE_1 ... BTYPE_9:
             if isClear {
-                self.console = String(type)
                 self.time = UInt32(type)
             }
             else {
-                guard let t = UInt32(self.console + String(type)) else { return false }
+                guard let t = UInt32(self.consoleString + String(type)) else { return false }
                 self.time = t
-                self.console += String(type)
             }
             self.date = Date(timeIntervalSince1970: Double(self.time))
 
@@ -280,15 +283,13 @@ struct CalculatorUNIXTime: View {
             let now = UInt32(self.date.timeIntervalSince1970)
             guard now != self.time else { return false }
             self.time = now
-            self.console = String(self.time)
             self.setDate()
-
+            
         //2038203820382038203820382038203820382038
         case BTYPE_2038:
             guard self.time != UInt32(Int32.max) else { return false }
             self.time = UInt32(Int32.max)
             self.date = Date(timeIntervalSince1970: Double(self.time))
-            self.console = String(self.time)
             self.setDate()
             
         //2106210621062106210621062106210621062106
@@ -296,22 +297,21 @@ struct CalculatorUNIXTime: View {
             guard self.time != UInt32.max else { return false }
             self.time = UInt32.max
             self.date = Date(timeIntervalSince1970: Double(self.time))
-            self.console = String(self.time)
             self.setDate()
             
         //DELDELDELDELDELDELDELDELDELDELDELDELDELD
         case BTYPE_DELETE:
             guard !isClear else { return false }
-            let substring = self.console.dropLast()
+            let substring = self.consoleString.dropLast()
             self.console = substring.isEmpty ? "0" : String(substring)
-            self.time = UInt32(self.console)!
+            guard let t = UInt32(self.consoleString) else { return false }
+            self.time = t
             self.date = Date(timeIntervalSince1970: Double(self.time))
             
         //CACCACCACCACCACCACCACCACCACCACCACCACCACC
         case BTYPE_CLEAR:
             guard !isAllClear else { return false }
             isOverflow = false
-            self.console = "0"
             self.time = 0
             self.date = Date(timeIntervalSince1970: 0)
             self.setDate()
@@ -323,7 +323,7 @@ struct CalculatorUNIXTime: View {
     }
     
     private func copy() {
-        UIPasteboard.general.string = self.console
+        UIPasteboard.general.string = self.consoleString
         object.sound()
         object.alertMessage = NSLocalizedString("Message_Copied_to_clipboard", comment: "")
         object.isAlerting = true
@@ -376,7 +376,8 @@ struct CalculatorUNIXTime: View {
         self.isOverflow = false
         self.date = calDate
         self.time = UInt32(self.date.timeIntervalSince1970)
-        self.console = String(self.time)
+//        self.console = String.localizedStringWithFormat("%lld", self.time)
+        self.console = self.time2String
         self.setDate()
     }
 }

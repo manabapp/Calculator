@@ -97,10 +97,10 @@ struct DataScreen: UIViewRepresentable {
     func updateUIView(_ uiView: UITextView, context: Context) {
         if uiView.text != text {
             uiView.text = text
-            uiView.isEditable = isEditable
-            uiView.font = isDecodable ? UIFont(name: "Menlo", size: DataScreen.fontSize * fontRate) : UIFont.boldSystemFont(ofSize: (DataScreen.fontSize + 1.0) * fontRate)
-            uiView.textAlignment = isDecodable ? .left : .center
         }
+        uiView.isEditable = isEditable
+        uiView.font = isDecodable ? UIFont(name: "Menlo", size: DataScreen.fontSize * fontRate) : UIFont.boldSystemFont(ofSize: (DataScreen.fontSize + 1.0) * fontRate)
+        uiView.textAlignment = isDecodable ? .left : .center
     }
     
     func makeCoordinator() -> Coordinator {

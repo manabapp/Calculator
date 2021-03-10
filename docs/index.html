@@ -21,15 +21,16 @@ Let's set this app to default calculator.<br>
 ( <font color=red>Reviewing in Apple Inc.</font> )
 
 <div class="yoko">
-    <div><img class="screenshotimg" src="img/ScreenShot1.jpeg" alt="image1" width=276px height=597px></div>
-    <div><img class="screenshotimg" src="img/ScreenShot2.jpeg" alt="image2" width=276px height=597px></div>
-    <div><img class="screenshotimg" src="img/ScreenShot3.jpeg" alt="image3" width=276px height=597px></div>
-    <div><img class="screenshotimg" src="img/ScreenShot4.jpeg" alt="image4" width=276px height=597px></div>
-    <div><img class="screenshotimg" src="img/ScreenShot5.jpeg" alt="image5" width=276px height=597px></div>
-    <div><img class="screenshotimg" src="img/ScreenShot6.jpeg" alt="image6" width=276px height=597px></div>
-    <div><img class="screenshotimg" src="img/ScreenShot7.jpeg" alt="image7" width=276px height=597px></div>
-    <div><img class="screenshotimg" src="img/ScreenShot8.jpeg" alt="image8" width=276px height=597px></div>
-    <div><img class="screenshotimg" src="img/ScreenShot9.jpeg" alt="image9" width=276px height=597px></div>
+    <div><img class="screenshotimg" src="img/ScreenShot1.PNG" alt="image1" width=276px height=597px></div>
+    <div><img class="screenshotimg" src="img/ScreenShot2.PNG" alt="image2" width=276px height=597px></div>
+    <div><img class="screenshotimg" src="img/ScreenShot3.PNG" alt="image3" width=276px height=597px></div>
+    <div><img class="screenshotimg" src="img/ScreenShot4.PNG" alt="image4" width=276px height=597px></div>
+    <div><img class="screenshotimg" src="img/ScreenShot5.PNG" alt="image5" width=276px height=597px></div>
+    <div><img class="screenshotimg" src="img/ScreenShot6.PNG" alt="image6" width=276px height=597px></div>
+    <div><img class="screenshotimg" src="img/ScreenShot7.PNG" alt="image7" width=276px height=597px></div>
+    <div><img class="screenshotimg" src="img/ScreenShot8.PNG" alt="image8" width=276px height=597px></div>
+    <div><img class="screenshotimg" src="img/ScreenShot9.PNG" alt="image9" width=276px height=597px></div>
+    <div><img class="screenshotimg" src="img/ScreenShot10.PNG" alt="image9" width=276px height=597px></div>
 </div>
 
 <p>
@@ -47,7 +48,7 @@ Let's set this app to default calculator.<br>
     <span class="functions">Numeric</span><br>
     Selects the type of numerical value from the following types:<br>
     &nbsp;&nbsp;- Decimal / Double floating point (<b>Double</b>)<br>
-    &nbsp;&nbsp;- Decimal / 64 bit Signed integer (<b>Int64</b>)<br>
+    &nbsp;&nbsp;- Integer / 64 bit Signed integer (<b>Int64</b>)<br>
     &nbsp;&nbsp;- Hexadecimal / Un-signed integer (<b>UInt64</b>)<br>
     Double can handle up to 15 digits (including up to 10 decimal places). <br>
     Int64/UInt64 can handle numerical values within the range of 64 bits, and in addition to the four basic arithmetic operations, modulo operations and various bit operations are possible. <br><br>
@@ -65,24 +66,6 @@ Let's set this app to default calculator.<br>
     Converts the entered character string to binary data (up to 64 KB), and displays in hexadecimal dump. <br>
     In addition, a binary data can be edited with an binary editor and can be converted back to a character string. <br>
     The encoding of multibyte code in character string data is UTF-8 (other character encodings are not supported). <br><br>
-    
-    <br>
-    <u>Specification / notes for numeric:</u><br>
-    <ul align="left">
-    <li>Priority of all operators are as same, and always evaluate from the beginning (ex. 3 + 2 * 2 = 10).</li>
-    <li>The overflow operation (is a operation that truncates the overflow / underflow part) is not performed, and an operation that results in overflow is canceled.</li>
-    <li>Division and modulo operation by 0 are canceled.</li>
-    <li>In Double type, doesn't use exponential notation (eg. 1.234e+16). Therefore, the calculation is performed within the range of 15 digits, which is the number of effective digits of double precision.</li>
-    <li>The effective digits in the decimal part of double type is the 10th place.</li>
-    <li>In Double type, an operation that results greater than 999999999999999 (or less than -999999999999999) are canceled.</li>
-    <li>In Double type, an operation that results in a positive number less than 0.0000000001 (or a negative number greater than -0.0000000001) do not result in an error, and the result is zero.</li>
-    <li>Bit array of Double type is displayed in double-precision IEEE 754 format.</li>
-    <li>If you switch the type of numeric value, the memory will be cleared.</li>
-    <li>When switching from Double to Int64 or UInt64, the decimal part is truncated.</li>
-    <li>When switching from Double or Int64 to UInt64, a negative value will be 0.</li>
-    <li>When switching from Int64 or UInt64 to Double, a value greater than 9999999999999999 (or less than -999999999999999) will be 0.0.</li>
-    <li>When switching from UInt64 to Int64, the value above the maximum value of Int64 (2 to the 63rd power -1) will be 0.</li>
-    </ul>
     </p>
     <a onclick="hideDescription();">Hide text</a>
 </div>

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CalculatorIPAddress: View {
     @EnvironmentObject var object: CalculatorSharedObject
-    @State var mode: Int = 0
+    @State var mode: Int = Self.modeIPv4
     @State var console: String = ""
     @State var isInvalid: Bool = false
     @State var ipaddr: UInt32 = 0
@@ -19,12 +19,14 @@ struct CalculatorIPAddress: View {
     @State var subnetmask: UInt32? = nil //same as netmask
     @State var broadcast: UInt32? = nil
     
+    static let modeIPv4: Int = 0
+    static let modeIPv6: Int = 1
+    
     private var buttonSpace: CGFloat { object.isStandard ? 1.0 : 5.0 }
     private var isClear: Bool { self.console.isEmpty }
     private var isAllClear: Bool  { self.isClear && !self.isInvalid && self.netaddr == nil && self.subnetmask == nil && self.broadcast == nil }
     private var hasSlash: Bool { self.console.contains("/") }
     private var consoleField: Text { self.isClear ? Text("           192.168.10.0/24").foregroundColor(Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray)) : Text(self.console) }
-    
     
     private var prefixLen: Int {
         guard var netmask = self.subnetmask else {
@@ -59,11 +61,20 @@ struct CalculatorIPAddress: View {
     var body: some View {
         VStack(spacing: 0) {
             Picker("", selection: self.$mode) {
-                Text("IPv4").tag(0)
+                Text("IPv4").tag(Self.modeIPv4)
+                Text("IPv6").tag(Self.modeIPv6)
             }
             .frame(height: 32)
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal, 1)
+            .onChange(of: mode) { mode in
+                if mode == Self.modeIPv6 {
+                    self.object.alertMessage = NSLocalizedString("Message_NotSupport", comment: "")
+                    self.object.alertDetail = ""
+                    self.object.isPopAlert = true
+                    self.mode = Self.modeIPv4
+                }
+            }
             
             HStack {
                 Spacer()
@@ -87,8 +98,16 @@ struct CalculatorIPAddress: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.4)
             
-            Button(action: { object.byteFieldsSwitch.toggle() }) {
-                if object.byteFieldsSwitch {
+            Button(action: { object.byteFieldsClosed.toggle() }) {
+                if object.byteFieldsClosed {
+                    Image(systemName: "chevron.compact.up")
+                        .font(.system(size: 20, weight: .semibold))
+                        .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
+                        .foregroundColor(Color.init(.lightGray))
+                        .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                        .cornerRadius(object.isStandard ? 0 : 8)
+                }
+                else {
                     VStack(spacing: 5) {
                         HStack(spacing: 10) {
                             ByteField(byte: UInt8(ipaddr >> 24 & 0xFF), label: "24")
@@ -105,14 +124,6 @@ struct CalculatorIPAddress: View {
                     }
                     .frame(width: object.deviceWidth, height: ByteField.height2, alignment: .center)
                     .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
-                }
-                else {
-                    Image(systemName: "chevron.compact.up")
-                        .font(.system(size: 20, weight: .semibold))
-                        .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
-                        .foregroundColor(Color.init(.lightGray))
-                        .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
-                        .cornerRadius(object.isStandard ? 0 : 8)
                 }
             }
             
@@ -311,8 +322,8 @@ struct CalculatorIPAddress: View {
         guard !text.isEmpty else {
             return
         }
-        if text.count > 18 {
-            text = String(text.prefix(18))
+        guard text.isValidIPv4Format || text.isValidCidrFormat else {
+            return
         }
         self.console = text
         object.sound()

@@ -8,18 +8,24 @@
 
 Message_Copied_to_clipboard = "Copied to clipboard.";
 Message_CantOpenURL = "Can't open the Internet site.";
+Message_NotSupport = "Not supported in the current version.";
 
 Button_Copy = "Copy";
 Button_Paste = "Paste";
 Button_Convert = "Convert";
 
+Description_App_Settings = "Changes setting for app operating & user interface";
+Description_About_App = "App's version information";
+Description_Numeric_Specification = "Specification of Numeric calculation";
+Description_Privacy_Policy = "Privacy policy for app (Link to the Internet site)";
+
 Label_Numeric = "Numeric";
 Label_UNIX_Time = "UNIX Time";
 Label_IP_Address = "IP Address";
 Label_Characters = "Characters";
-Label_Settings = "Settings";
+Label_Menu = "Menu";
 Label_Calculator_D = "Decimal / Double";
-Label_Calculator_I = "Decimal / Int64";
+Label_Calculator_I = "Integer / Int64";
 Label_Calculator_X = "Hex / UInt64";
 Label_Local_Time = "Local Time";
 Label_UTC = "UTC";
@@ -28,20 +34,43 @@ Label_CIDR = "CIDR: ";
 Label_Network_Address = "Network Address: ";
 Label_Subnet_Mask = "Subnet Mask: ";
 Label_Broadcast_Address = "Broadcast Address: ";
+Label_FontSmall = "Small font";
+Label_FontLarge = "Large font";
+Label_LF = "LF";
+Label_CRLF = "CRLF";
 Label_byte = "byte";
 Label_bytes = "bytes";
 Label_Non-unicode_character_data = "Non-unicode character data";
-Label_Standard_type = "Standard type";
-Label_Keyboard_type = "Keyboard type";
+Label_Standard_style = "Standard style";
+Label_Keyboard_style = "Keyboard style";
 Label_Disabled = "Disabled";
 Label_Enabled = "Enabled";
 Label_Lowercase = "Lowercase (a - f)";
 Label_Uppercase = "Uppercase (A - F)";
-Label_Small = "Small";
-Label_Large = "Large";
 
+Header_PREFERENCES = "PREFERENCES";
+Header_INFORMATION = "INFORMATION";
+Header_GENERAL = "General";
+Header_DOUBLE_TYPE = "Double Type";
+Header_ERROR_OPERATION = "Error Operation";
+Header_TYPE_SWITCHING = "Type switching";
+
+Footer_UI_DESIGN = "Selects the style of the app's design.\n";
 Footer_IDLE_TIMER = "To avoid going into sleep mode during calculation, turns off iOS's idle timer.\n";
-Footer_SOUND_EFFECTS = "Makes a push sound when tapping the button. In addition, sounds a vibration when error.\n";
-Footer_HEXADECIMAL_LETTER = "Specifies the alphabetical notation for hexadecimal.\n";
-Footer_UI_STYLE = "Selects the style of the app's design.\n";
-Footer_CHARACTERS_FONT = "Selects the font size of display area in Characters feature.";
+Footer_SOUND_EFFECTS = "Makes a clicking sound when tapping the button. In addition, sounds a vibration when an error occurs (ex. Overflow).\n";
+Footer_THOUSANDS_SEPARATOR = "Displays numbers separated by commas every 3 digits.\n";
+Footer_HEXADECIMAL_LETTER = "Specifies the alphabetical notation for hexadecimal.";
+
+Specification_General1 = "Priority of all operators are as same, and always evaluate from the beginning.\nex. 3 + 2 * 2 = 10";
+Specification_DoubleType1 = "Doesn't use exponential notation such as 1.234e+16.\nTherefore, the calculation is performed within the range of 15 digits, which is the number of effective digits of double precision.";
+Specification_DoubleType2 = "The effective digits in the decimal part is the 10th place.";
+Specification_DoubleType3 = "For an operation that results in a positive number less than 0.0000000001 (or a negative number greater than -0.0000000001), the operational result is zero.";
+Specification_DoubleType4 = "Bit array is displayed in double-precision IEEE 754 format.";
+Specification_ErrorOperation1 = "Division and modulo operations by 0 are canceled.";
+Specification_ErrorOperation2 = "An operation that results in overflow is canceled.\nOverflow operation (is a operation that truncates the overflow / underflow part) is not performed.";
+Specification_ErrorOperation3 = "An operation in double type that results greater than 999999999999999 (or less than -999999999999999) is canceled.";
+Specification_TypeSwitching1 = "If you switch the type of numeric value, the memory will be cleared.";
+Specification_TypeSwitching2 = "When switching from Double to Int64/UInt64, the digits after the decimal point will be cut.";
+Specification_TypeSwitching3 = "When switching from Double/Int64 to UInt64, a negative value will be 0.";
+Specification_TypeSwitching4 = "When switching from Int64/UInt64 to Double, a value greater than 9999999999999999 (or less than -999999999999999) will be 0.";
+Specification_TypeSwitching5 = "When switching from UInt64 to Int64, the value above the maximum value of Int64 (2 to the 63rd power -1) will be 0.";

@@ -57,17 +57,82 @@ struct CalculatorCharacters: View {
             .padding(.bottom, 5)
             
             HStack(alignment: .bottom) {
+                Text("Ascii")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(Color.init(UIColor.systemGray))
+                    .padding(.leading, 4)
+                Spacer()
+                Picker("", selection: self.$returnCodeIndex) {
+                    Text("Label_LF").tag(0)
+                    Text("Label_CRLF").tag(1)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .frame(width: 200, height: 32, alignment: .bottomTrailing)
+                .padding(.trailing, 4)
+                .disabled(!self.isAsciiEditable)
+            }
+            .padding(.bottom, 3)
+                
+            VStack(spacing: buttonSpace) {
+                DataScreen(text: self.$asciiText, isEditable: self.$isAsciiEditable, isDecodable: self.$isAsciiDecodable, onEditingChanged: update)
+                
+                HStack(spacing: buttonSpace) {
+                    Button(action: { self.copy(isHex: false) }) { HorizontalBbody(t: "Button_Copy", i: "doc.on.doc", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
+                    Button(action: { self.paste(isHex: false) }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
+                    Button(action: { self.clear(isHex: false) }) { HorizontalBbody(t: "C", c: 3, b: .lightGray, f: .black) }
+                }
+                .padding(.horizontal, object.isStandard ? 0 : 5)
+                
+                HStack(spacing: 0) {
+                    Spacer()
+                    Image(systemName: "arrowtriangle.up.circle")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(Color.init(UIColor.systemGray))
+                    Spacer()
+                    Text("\(self.data.count) " + NSLocalizedString(self.data.count == 1 ? "Label_byte" : "Label_bytes", comment: ""))
+                        .font(.system(size: 16))
+                    Spacer()
+                    Image(systemName: "arrowtriangle.down.circle")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(Color.init(UIColor.systemGray))
+                    Spacer()
+                }
+                .padding(.top, object.isStandard ? 9 : 5)
+            }
+            .padding(.bottom, 10)
+            
+            HStack(alignment: .bottom) {
                 Text("Hex")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(Color.init(UIColor.systemGray))
                     .padding(.leading, 4)
                 Spacer()
-                Text("\(self.data.count) " + NSLocalizedString(self.data.count == 1 ? "Label_byte" : "Label_bytes", comment: ""))
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(Color.init(UIColor.systemGray))
-                    .padding(.trailing, 2)
+                Picker("", selection: self.$object.charactersFont) {
+                    Text("Label_FontSmall").tag(DataScreen.fontSmall)
+                    Text("Label_FontLarge").tag(DataScreen.fontLarge)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .frame(width: 200, height: 32, alignment: .bottomTrailing)
+                .padding(.trailing, 4)
+                .onChange(of: object.charactersFont) { _ in
+                    self.setIndex()
+                    self.setHex()
+                    self.setChars()
+                    var isCRLF: Bool = false
+                    if let text2 = self.getAscii(isCRLF: &isCRLF) {
+                        self.returnCodeIndex = isCRLF ? 1 : 0
+                        self.asciiText = text2
+                        self.isAsciiEditable = true
+                        self.isAsciiDecodable = true
+                    }
+                    else {
+                        self.asciiText = NSLocalizedString("Label_Non-unicode_character_data", comment: "")
+                        self.isAsciiEditable = false
+                        self.isAsciiDecodable = false
+                    }
+                }
             }
-            .padding(.bottom, 2)
+            .padding(.bottom, 3)
             
             VStack(spacing: buttonSpace) {
                 HStack(spacing: 0) {
@@ -85,55 +150,10 @@ struct CalculatorCharacters: View {
                     Button(action: { self.clear(isHex: true) }) { HorizontalBbody(t: "C", c: 3, b: .lightGray, f: .black) }
                 }
                 .padding(.horizontal, object.isStandard ? 0 : 5)
-            }
-            
-            HStack(spacing: 0) {
-                Spacer()
-                Image(systemName: "arrowtriangle.up.circle")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(Color.init(UIColor.systemGray))
-                Spacer()
-                Spacer()
-                Image(systemName: "arrowtriangle.down.circle")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(Color.init(UIColor.systemGray))
-                Spacer()
-            }
-            .padding(.vertical, 10)
-            
-            HStack(alignment: .bottom) {
-                Text("Ascii")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(Color.init(UIColor.systemGray))
-                    .padding(.leading, 4)
-                    .padding(.bottom, -4)
-                Spacer()
-                Picker("", selection: self.$returnCodeIndex) {
-                    Text("LF").tag(0)
-                    Text("CRLF").tag(1)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .frame(width: 200, height: 32, alignment: .bottomTrailing)
-                .padding(.horizontal, 1)
-                .disabled(!self.isAsciiEditable)
-            }
-            .padding(.bottom, 8)
-                
-            VStack(spacing: buttonSpace) {
-                DataScreen(text: self.$asciiText, isEditable: self.$isAsciiEditable, isDecodable: self.$isAsciiDecodable, onEditingChanged: update)
-                    .padding(.top, -5)
-                    .padding(.leading, 0)
                 
                 HStack(spacing: buttonSpace) {
-                    Button(action: { self.copy(isHex: false) }) { HorizontalBbody(t: "Button_Copy", i: "doc.on.doc", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
-                    Button(action: { self.paste(isHex: false) }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
-                    Button(action: { self.clear(isHex: false) }) { HorizontalBbody(t: "C", c: 3, b: .lightGray, f: .black) }
-                }
-                .padding(.horizontal, object.isStandard ? 0 : 5)
-                
-                HStack(spacing: buttonSpace) {
-                    Button(action: { self.convertA2X() }) { HorizontalBbody(t: "Button_Convert", i: "arrowtriangle.up.circle", c: 5, w: 2, b: .systemBlue, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
-                    Button(action: { self.convertX2A() }) { HorizontalBbody(t: "Button_Convert", i: "arrowtriangle.down.circle", c: 5, w: 2, b: .systemBlue) }
+                    Button(action: { self.convertX2A() }) { HorizontalBbody(t: "Button_Convert", i: "arrowtriangle.up.circle", c: 5, w: 2, b: .systemBlue) }
+                    Button(action: { self.convertA2X() }) { HorizontalBbody(t: "Button_Convert", i: "arrowtriangle.down.circle", c: 5, w: 2, b: .systemBlue, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
                     Button(action: { UIApplication.shared.closeKeyboard() }) { HorizontalBbody(i: "keyboard.chevron.compact.down", c: 5, b: .systemBlue, f: self.isKeyboardOpened ? .white : .systemGray) }.disabled(!isKeyboardOpened)
                 }
                 .padding(.horizontal, object.isStandard ? 0 : 5)

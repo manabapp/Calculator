@@ -8,16 +8,22 @@
 
 Message_Copied_to_clipboard = "クリップボードにコピーしました。";
 Message_CantOpenURL = "インターネットのサイトを開くことができません。";
+Message_NotSupport = "現在のバージョンではサポートされていません。";
 
 Button_Copy = "コピー";
 Button_Paste = "貼り付け";
 Button_Convert = "変換";
 
+Description_App_Settings = "アプリの動作設定および画面設定を変更する";
+Description_About_App = "アプリのバージョン情報";
+Description_Numeric_Specification = "数値計算の仕様および留意事項";
+Description_Privacy_Policy = "アプリのプライバシーポリシー（外部インターネットサイト）";
+
 Label_Numeric = "数値計算";
 Label_UNIX_Time = "時間変換";
 Label_IP_Address = "アドレス計算";
 Label_Characters = "文字列変換";
-Label_Settings = "アプリ設定";
+Label_Menu = "メニュー";
 Label_Calculator_D = "10 進数 / Double";
 Label_Calculator_I = "10 進数 / Int64";
 Label_Calculator_X = "16 進数 / UInt64";
@@ -28,20 +34,43 @@ Label_CIDR = "CIDR: ";
 Label_Network_Address = "ネットワークアドレス: ";
 Label_Subnet_Mask = "サブネットマスク: ";
 Label_Broadcast_Address = "ブロードキャストアドレス: ";
+Label_FontSmall = "フォント小";
+Label_FontLarge = "フォント大";
+Label_LF = "LF";
+Label_CRLF = "CRLF";
 Label_byte = "バイト";
 Label_bytes = "バイト";
 Label_Non-unicode_character_data = "非 UNICODE 文字列データ";
-Label_Standard_type = "標準タイプ";
-Label_Keyboard_type = "キーボードタイプ";
+Label_Standard_style = "標準スタイル";
+Label_Keyboard_style = "キーボードスタイル";
 Label_Disabled = "無効にする";
 Label_Enabled = "有効にする";
 Label_Lowercase = "小文字 ( a - f )";
 Label_Uppercase = "大文字 ( A - F )";
-Label_Small = "小さいサイズ";
-Label_Large = "大きいサイズ";
 
+Header_PREFERENCES = "環境設定";
+Header_INFORMATION = "情報";
+Header_GENERAL = "全般";
+Header_ERROR_OPERATION = "エラー操作";
+Header_DOUBLE_TYPE = "Double 型";
+Header_TYPE_SWITCHING = "型の切り替え";
+
+Footer_UI_DESIGN = "アプリのデザインを選択します。\n";
 Footer_IDLE_TIMER = "計算中にスリープ状態になるのを避けるため、iOS のアイドルタイマーを無効にします。\n";
-Footer_SOUND_EFFECTS = "ボタンをタップしたときにプッシュ音を鳴らします。さらに、エラー時にはバイブレーションを鳴らします。\n";
-Footer_HEXADECIMAL_LETTER = "16 進数におけるアルファベット表記を指定します。\n";
-Footer_UI_STYLE = "アプリのデザインを選択します。\n";
-Footer_CHARACTERS_FONT = "文字列変換における表示領域のフォントサイズを選択します。";
+Footer_SOUND_EFFECTS = "ボタンをタップしたときにクリック音を鳴らします。さらに、エラー発生時（例：Overflow）にはバイブレーションを鳴らします。\n";
+Footer_THOUSANDS_SEPARATOR = "3 桁毎にカンマ区切りで数値（10進数）を表示します。\n";
+Footer_HEXADECIMAL_LETTER = "16 進数におけるアルファベット表記を指定します。";
+
+Specification_General1 = "演算子の優先順位はすべて同じであり、常に先頭から評価します。\n例：3 + 2 * 2 = 10";
+Specification_DoubleType1 = "1.234e+16 のような指数表示は用いません。\nそのため、倍精度の有効桁数である 15 桁の範囲内で計算を行います。";
+Specification_DoubleType2 = "小数部の有効桁数は第 10 位です。";
+Specification_DoubleType3 = "結果が 0.0000000001 より小さな正数（または、-0.0000000001 より大きな負数）となる演算は、結果を 0 とします。";
+Specification_DoubleType4 = "ビット列は、倍精度の IEEE 754 形式で表示されます。";
+Specification_ErrorOperation1 = "0 による除算および剰余演算はキャンセルされます。";
+Specification_ErrorOperation2 = "結果がオーバーフローとなる演算はキャンセルされます。\nオーバーフロー演算（オーバーフロー/アンダーフロー部分を切り捨てる演算）は行われません。";
+Specification_ErrorOperation3 = "結果が 999999999999999 を超える（または、-999999999999999 を下回る）Double 型の演算はキャンセルされます。";
+Specification_TypeSwitching1 = "数値の型を切り替えた場合、メモリーはクリアされます。";
+Specification_TypeSwitching2 = "Double から Int64/UInt64 に切り替える場合、小数部は切り捨てられます。";
+Specification_TypeSwitching3 = "Double/Int64 から UInt64 に切り替える場合、負の値は 0 になります。";
+Specification_TypeSwitching4 = "Int64/UInt64 から Double に切り替える場合、999999999999999 を超える（または、-999999999999999 を下回る）値は 0 になります。";
+Specification_TypeSwitching5 = "UInt64 から Int64 に切り替える場合、Int64 の最大値（2 の 63乗 -1）を超える値は 0 になります。";

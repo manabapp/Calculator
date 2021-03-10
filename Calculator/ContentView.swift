@@ -50,14 +50,17 @@ struct ContentView: View {
                 }
                 .tag(3)
                 
-                CalculatorSettings()
+                NavigationView {
+                    CalculatorMenu()
+                }
                 .tabItem {
                     VStack {
                         Image(systemName: "gearshape.2")
-                        Text("Label_Settings")
+                        Text("Label_Menu")
                     }
                 }
                 .tag(4)
+                .navigationViewStyle(StackNavigationViewStyle())
             }
             .blur(radius: object.isAlerting ? 2 : 0)
             .alert(isPresented: self.$object.isPopAlert) {

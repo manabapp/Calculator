@@ -26,6 +26,23 @@ extension String {
 
         return replacedStr
     }
+    
+    var round15: String {
+        if !self.contains(".") {
+            return self
+        }
+        let array: [String] = self.components(separatedBy: ".")
+        if array.count != 2 {
+            return self
+        }
+        if totalDigits <= 15 {
+            return self
+        }
+        if (totalDigits - decimalDigits) >= 15 {
+            return array[0]
+        }
+        return array[0] + "." + String(array[1].prefix(15 - totalDigits + decimalDigits))
+    }
 
     var length: Int {
         let string_NS = self as NSString
@@ -49,7 +66,8 @@ extension String {
     }
     
     var totalDigits: Int {
-        var count = self.count
+        var count = self.replacingOccurrences(of:",", with:"").count
+//        var count = self.count
         if self.contains(".") {
             count -= 1
         }

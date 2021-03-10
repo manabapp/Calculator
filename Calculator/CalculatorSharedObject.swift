@@ -19,7 +19,7 @@ class CalculatorSharedObject: ObservableObject {
     
     var isStandard: Bool { self.appSettingUIStyle == Self.uiStyleStandard }
     var isUpper: Bool { self.appSettingHexLetter == Self.hexLetterUppercase }
-    var isCharsLarge: Bool { self.appSettingCharacterFont == DataScreen.fontLarge }
+    var isCharsLarge: Bool { self.charactersFont == DataScreen.fontLarge }
     
     @Published var appVersion: String = ""
     @Published var deviceWidth: CGFloat = 0.0
@@ -28,8 +28,8 @@ class CalculatorSharedObject: ObservableObject {
     @Published var alertMessage: String = ""
     @Published var alertDetail: String = ""
     @Published var isPopAlert: Bool = false
-    @Published var byteFieldsSwitch: Bool = true
-    
+//    @Published var byteFieldsSwitch: Bool = true
+
     @Published var appSettingUIStyle: Int = CalculatorSharedObject.uiStyleStandard {
         didSet {
             UserDefaults.standard.set(appSettingUIStyle, forKey: "appSettingUIStyle")
@@ -46,17 +46,38 @@ class CalculatorSharedObject: ObservableObject {
             UserDefaults.standard.set(appSettingSoundEffects, forKey: "appSettingSoundEffects")
         }
     }
+    @Published var appSetting1000Separator: Bool = false {
+        didSet {
+            UserDefaults.standard.set(appSetting1000Separator, forKey: "appSetting1000Separator")
+        }
+    }
     @Published var appSettingHexLetter: Int = CalculatorSharedObject.hexLetterLowercase {
         didSet {
             UserDefaults.standard.set(appSettingHexLetter, forKey: "appSettingHexLetter")
         }
     }
-    @Published var appSettingCharacterFont: Int = DataScreen.fontSmall {
+    
+    @Published var numericMode: Int = CalculatorNumeric.modeD {
         didSet {
-            UserDefaults.standard.set(appSettingCharacterFont, forKey: "appSettingCharacterFont")
+            UserDefaults.standard.set(numericMode, forKey: "numericMode")
         }
     }
-    
+    @Published var unixTimeMode: Int = CalculatorUNIXTime.modeLocal {
+        didSet {
+            UserDefaults.standard.set(unixTimeMode, forKey: "unixTimeMode")
+        }
+    }
+    @Published var byteFieldsClosed: Bool = false {
+        didSet {
+            UserDefaults.standard.set(byteFieldsClosed, forKey: "byteFieldsClosed")
+        }
+    }
+    @Published var charactersFont: Int = DataScreen.fontSmall {
+        didSet {
+            UserDefaults.standard.set(charactersFont, forKey: "charactersFont")
+        }
+    }
+
     func sound(isError: Bool = false) {
         if appSettingSoundEffects {
             AudioServicesPlaySystemSound(SystemSoundID(isError ? 1053 : 1104)) //Sounds
@@ -68,8 +89,14 @@ class CalculatorSharedObject: ObservableObject {
         appSettingUIStyle = UserDefaults.standard.integer(forKey: "appSettingUIStyle")
         appSettingIdleTimerDisabled = UserDefaults.standard.bool(forKey: "appSettingIdleTimerDisabled")
         appSettingSoundEffects = UserDefaults.standard.bool(forKey: "appSettingSoundEffects")
+        appSetting1000Separator = UserDefaults.standard.bool(forKey: "appSetting1000Separator")
         appSettingHexLetter = UserDefaults.standard.integer(forKey: "appSettingHexLetter")
-        appSettingCharacterFont = UserDefaults.standard.integer(forKey: "appSettingCharacterFont")
+        
+        numericMode = UserDefaults.standard.integer(forKey: "numericMode")
+        unixTimeMode = UserDefaults.standard.integer(forKey: "unixTimeMode")
+        byteFieldsClosed = UserDefaults.standard.bool(forKey: "byteFieldsClosed")
+        charactersFont = UserDefaults.standard.integer(forKey: "charactersFont")
+        
         if let string = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String { appVersion = string }
         let width = CGFloat(UIScreen.main.bounds.width)
         let height = CGFloat(UIScreen.main.bounds.height)

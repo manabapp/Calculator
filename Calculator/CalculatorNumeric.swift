@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Foundation
+import StoreKit
 
 let BTYPE_0: Int = 0
 let BTYPE_1: Int = 1
@@ -48,7 +49,6 @@ let BTYPE_ENTER: Int = 35
 struct CalculatorNumeric: View {
     @EnvironmentObject var object: CalculatorSharedObject
     
-    @State var mode: Int = Self.modeD //modeD(Double), modeI(Signed Integer), or modeX(Unsigned Integer)
     @State var lastType: Int = BTYPE_0
     @State var operatorType: Int? = nil //BTYPE_PLUS(+), _MINUS(-), _MULTIPLY(*), _DIVIDE(/), _REMINDER(%), _AND(&), _OR(|), or _XOR(^)
     @State var isOutOfRange: Bool = false
@@ -65,6 +65,8 @@ struct CalculatorNumeric: View {
     @State var memoryResultI: Int64? = nil
     @State var memoryResultX: UInt64? = nil
     
+    private var mode: Int { object.numericMode }
+    private var consoleString: String { self.console.replacingOccurrences(of:",", with:"") }
     private var buttonSpace: CGFloat { object.isStandard ? 1.0 : 5.0 }
     private var isTyping: Bool { self.lastType <= BTYPE_DELETE }
     private var hasMemoryResult: Bool {
@@ -77,9 +79,7 @@ struct CalculatorNumeric: View {
     private var isClear: Bool     { self.console == "0" }
     private var isAllClear: Bool  { self.isClear && self.operatorType == nil && !self.hasMemoryResult && !self.isOutOfRange && !self.isOverflow && !self.isDivisionByZero }
     private var isNegative : Bool { self.console.hasPrefix("-") }
-    private var isDecimal: Bool   { self.mode == Self.modeD || self.mode == Self.modeI }
     private var isHex: Bool       { self.mode == Self.modeX }
-    private var isInteger: Bool   { self.mode == Self.modeI || self.mode == Self.modeX }
     private var isDouble: Bool    { self.mode == Self.modeD }
     private var isPlus: Bool      { if let type = self.operatorType { return type == BTYPE_PLUS      } else { return false } }
     private var isMinus: Bool     { if let type = self.operatorType { return type == BTYPE_MINUS     } else { return false } }
@@ -101,9 +101,44 @@ struct CalculatorNumeric: View {
     static let modeI: Int = 1 //Signed Integer (64bit)
     static let modeX: Int = 2 //Unsigned Integer (64bit)
     
+    private func d2String(_ value: Double) -> String {
+        var doubleString: String = ""
+        if object.appSetting1000Separator {
+            doubleString = String.localizedStringWithFormat("%15.10F", value).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        else {
+            doubleString = String(format: "%15.10F", value).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        if doubleString.contains(".") {
+            let array: [String] = doubleString.components(separatedBy: ".")
+            if array.count == 2 {
+                if doubleString.totalDigits > 15 {
+                    doubleString = array[0]
+                    let intDigits = doubleString.totalDigits - doubleString.decimalDigits
+                    if intDigits < 15 {
+                        doubleString += "."
+                        doubleString += String(array[1].prefix(15 - intDigits))
+                    }
+                }
+            }
+        }
+        return doubleString.strReplace
+    }
+    private func i2String(_ value: Int64) -> String {
+        if object.appSetting1000Separator {
+            return String.localizedStringWithFormat("%lld", value)
+        }
+        else {
+            return String(format: "%lld", value)
+        }
+    }
+    private func x2String(_ value: UInt64) -> String {
+        return String(format: object.isUpper ? "%llX" : "%llx", value)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
-            Picker("", selection: self.$mode) {
+            Picker("", selection: self.$object.numericMode) {
                 Text("Label_Calculator_D").tag(Self.modeD)
                 Text("Label_Calculator_I").tag(Self.modeI)
                 Text("Label_Calculator_X").tag(Self.modeX)
@@ -111,11 +146,11 @@ struct CalculatorNumeric: View {
             .frame(height: 32)
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal, 1)
-            .onChange(of: mode) { mode in
+            .onChange(of: object.numericMode) { _ in
                 switch mode {
-                case Self.modeD: self.console = String(format: "%15.10F", consoleD).trimmingCharacters(in: .whitespacesAndNewlines).strReplace
-                case Self.modeI: self.console = String(format: "%lld", consoleI)
-                default:         self.console = String(format: object.isUpper ? "%llX" : "%llx", consoleX)
+                case Self.modeD: self.console = self.d2String(consoleD)
+                case Self.modeI: self.console = self.i2String(consoleI)
+                default:         self.console = self.x2String(consoleX)
                 }
                 self.memoryResultD = nil
                 self.memoryResultI = nil
@@ -160,8 +195,16 @@ struct CalculatorNumeric: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.4)
             
-            Button(action: { object.byteFieldsSwitch.toggle() }) {
-                if object.byteFieldsSwitch {
+            Button(action: { object.byteFieldsClosed.toggle() }) {
+                if object.byteFieldsClosed {
+                    Image(systemName: "chevron.compact.up")
+                        .font(.system(size: 20, weight: .semibold))
+                        .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
+                        .foregroundColor(Color.init(.lightGray))
+                        .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                        .cornerRadius(object.isStandard ? 0 : 8)
+                }
+                else {
                     HStack(spacing: 10) {
                         VStack(spacing: 5) {
                             ByteField(byte: self.getByte(7), label: "56")
@@ -183,14 +226,6 @@ struct CalculatorNumeric: View {
                     .frame(width: object.deviceWidth, height: ByteField.height2, alignment: .center)
                     .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
                 }
-                else {
-                    Image(systemName: "chevron.compact.up")
-                        .font(.system(size: 20, weight: .semibold))
-                        .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
-                        .foregroundColor(Color.init(.lightGray))
-                        .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
-                        .cornerRadius(object.isStandard ? 0 : 8)
-                }
             }
             
             VStack(spacing: buttonSpace) {
@@ -207,7 +242,7 @@ struct CalculatorNumeric: View {
                         Button(action: { tap(BTYPE_A) }) { Bbody(t: "A", c: column, v: true, m: isHex) }
                         Button(action: { tap(BTYPE_B) }) { Bbody(t: "B", c: column, v: true, m: isHex) }
                         Button(action: { tap(BTYPE_C) }) { Bbody(t: "C", c: column, v: true, m: isHex) }
-                        Button(action: { tap(BTYPE_PLUS_MINUS) }) { Bbody(i: isNegative ? "minus.slash.plus":"plus.slash.minus", c: column, b: .lightGray, f: .black) }.disabled(true)
+                        Button(action: { tap(BTYPE_PLUS_MINUS) }) { Bbody(i: isNegative ? "minus.slash.plus":"plus.slash.minus", c: column, b: .lightGray, f: .systemGray) }.disabled(true)
                         Button(action: { tap(BTYPE_DELETE) }) { Bbody(t: "DEL", i: "delete.left", c: column, b: .lightGray, f: .black) }
                     }
                 }
@@ -258,7 +293,7 @@ struct CalculatorNumeric: View {
                         Button(action: { tap(BTYPE_NOT) }) { Bbody(t: object.isStandard ? "NOT":"~", c: column, b: .lightGray, f: .black, v: true) }
                     }
                     Button(action: { tap(BTYPE_0) }) { Bbody(t: "0", c: column, w: 2, v: true, m: isHex) }
-                    Button(action: { tap(BTYPE_DOT) }) { Bbody(t: ".", c: column, f: isInteger ? .lightGray : .white, v: true) }.disabled(isInteger)
+                    Button(action: { tap(BTYPE_DOT) }) { Bbody(t: ".", c: column, f: isDouble ? .white : .lightGray, v: true) }.disabled(!isDouble)
                     Button(action: { tap(BTYPE_ENTER) }) { Bbody(i: object.isStandard ? "equal":"return", c: column, w: 2, b: .systemBlue) }
                 }
                 HStack(spacing: buttonSpace) {
@@ -272,6 +307,7 @@ struct CalculatorNumeric: View {
         }
     }
     
+
     private func getByte(_ offset: Int) -> UInt8 {
         switch mode {
         case Self.modeD:
@@ -290,39 +326,57 @@ struct CalculatorNumeric: View {
     private func setConsole() {
         switch self.mode {
         case Self.modeD:
-            guard var value = Double(self.console) else { return }
+            guard var value = Double(self.consoleString) else { return }
             if value.isNaN { value = 0.0 }
             consoleD = value
             consoleI = (value < Double(Int64.min) || value > Double(Int64.max)) ? 0 : Int64(value)
             consoleX = (value < 0 || value > Double(UInt64.max)) ? 0 : UInt64(value)
+            
+            if self.consoleString.hasPrefix("-0") { return }
+            let array: [String] = self.consoleString.components(separatedBy: ".")
+            if array.count < 2 {
+                if let value = Int64(self.consoleString) {
+                    self.console = self.i2String(value)
+                }
+            }
+            else {
+                if let value = Int64(array[0]) {
+                    self.console = self.i2String(value)
+                    self.console += "."
+                    self.console += array[1]
+                }
+            }
         case Self.modeI:
-            guard let value = Int64(self.console) else { return }
+            guard let value = Int64(self.consoleString) else { return }
             consoleI = value
             consoleD = (value < Int64(Self.doubleMin) || value > Int64(Self.doubleMax)) ? 0.0 : Double(value)
             consoleX = value < 0 ? 0 : UInt64(value)
+            if self.console == "-0" { return }
+            self.console = self.i2String(consoleI)
         default: //modeX:
-            guard let value = UInt64(self.console, radix: 16) else { return }
+            guard let value = UInt64(self.consoleString, radix: 16) else { return }
             consoleX = value
             consoleD = value > UInt64(Self.doubleMax) ? 0.0 : Double(value)
             consoleI = value > UInt64(Int64.max) ? 0 : Int64(value)
+            self.console = self.x2String(consoleX)
         }
     }
     
     private func setOperand() {
         switch self.mode {
         case Self.modeD:
-            guard var value = Double(self.console) else { return }
+            guard var value = Double(self.consoleString) else { return }
             if value.isNaN { value = 0.0 }
             memoryOperandD = value
             memoryOperandI = (value < Double(Int64.min) || value > Double(Int64.max)) ? 0 : Int64(value)
             memoryOperandX = (value < 0 || value > Double(UInt64.max)) ? 0 : UInt64(value)
         case Self.modeI:
-            guard let value = Int64(self.console) else { return }
+            guard let value = Int64(self.consoleString) else { return }
             memoryOperandI = value
             memoryOperandD = (value < Int64(Self.doubleMin) || value > Int64(Self.doubleMax)) ? 0.0 : Double(value)
             memoryOperandX = value < 0 ? 0 : UInt64(value)
         default: //modeX:
-            guard let value = UInt64(self.console, radix: 16) else { return }
+            guard let value = UInt64(self.consoleString, radix: 16) else { return }
             memoryOperandX = value
             memoryOperandD = value > UInt64(Self.doubleMax) ? 0.0 : Double(value)
             memoryOperandI = value > UInt64(Int64.max) ? 0 : Int64(value)
@@ -332,18 +386,18 @@ struct CalculatorNumeric: View {
     private func setResult() {
         switch self.mode {
         case Self.modeD:
-            guard var value = Double(self.console) else { return }
+            guard var value = Double(self.consoleString) else { return }
             if value.isNaN { value = 0.0 }
             memoryResultD = value
             memoryResultI = (value < Double(Int64.min) || value > Double(Int64.max)) ? 0 : Int64(value)
             memoryResultX = (value < 0 || value > Double(UInt64.max)) ? 0 : UInt64(value)
         case Self.modeI:
-            guard let value = Int64(self.console) else { return }
+            guard let value = Int64(self.consoleString) else { return }
             memoryResultI = value
             memoryResultD = (value < Int64(Self.doubleMin) || value > Int64(Self.doubleMax)) ? 0.0 : Double(value)
             memoryResultX = value < 0 ? 0 : UInt64(value)
         default: //modeX:
-            guard let value = UInt64(self.console, radix: 16) else { return }
+            guard let value = UInt64(self.consoleString, radix: 16) else { return }
             memoryResultX = value
             memoryResultD = value > UInt64(Self.doubleMax) ? 0.0 : Double(value)
             memoryResultI = value > UInt64(Int64.max) ? 0 : Int64(value)
@@ -352,18 +406,9 @@ struct CalculatorNumeric: View {
     
     private func putResult() {
         switch self.mode {
-        case Self.modeD:
-            if let value = self.memoryResultD {
-                self.console = String(format: "%15.10F", value).trimmingCharacters(in: .whitespacesAndNewlines).strReplace
-            }
-        case Self.modeI:
-            if let value = self.memoryResultI {
-                self.console = String(format: "%lld", value)
-            }
-        default: //modeX:
-            if let value = self.memoryResultX {
-                self.console = String(format: object.isUpper ? "%llX" : "%llx", value)
-            }
+        case Self.modeD: if let value = self.memoryResultD { self.console = self.d2String(value) }
+        case Self.modeI: if let value = self.memoryResultI { self.console = self.i2String(value) }
+        default:         if let value = self.memoryResultX { self.console = self.x2String(value) }
         }
     }
     
@@ -372,6 +417,11 @@ struct CalculatorNumeric: View {
         if self.canTyping(type) {
             let ret = self.action(type)
             object.sound(isError: !ret)
+            if !ret {
+                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                    SKStoreReviewController.requestReview(in: scene)
+                }
+            }
         }
         self.setConsole()
         self.lastType = willAllClear ? BTYPE_0 : type
@@ -393,37 +443,37 @@ struct CalculatorNumeric: View {
         case BTYPE_0 ... BTYPE_9:
             switch self.mode {
             case Self.modeD:
-                guard var value = Double(self.console + String(type)) else { return false }
+                guard var value = Double(self.consoleString + String(type)) else { return false }
                 if value.isNaN { value = 0.0 }
                 guard value >= Double(Int.min) && value <= Double(Int.max) else { return false }
-                guard self.console.totalDigits < 15 else { return false }
-                guard self.console.decimalDigits < 10 else { return false }
+                guard self.consoleString.totalDigits < 15 else { return false }
+                guard self.consoleString.decimalDigits < 10 else { return false }
             case Self.modeI:
-                guard let _ = Int64(self.console + String(type)) else { return false }
+                guard let _ = Int64(self.consoleString + String(type)) else { return false }
             default: //modeX:
-                guard let _ = UInt64(self.console + String(type), radix: 16) else { return false }
+                guard let _ = UInt64(self.consoleString + String(type), radix: 16) else { return false }
             }
             
         case BTYPE_A ... BTYPE_F:
             guard isHex else { return false }
-            guard let _ = UInt64(self.console + String(format: object.isUpper ? "%X" : "%x", type), radix: 16) else { return false }
+            guard let _ = UInt64(self.consoleString + String(format: object.isUpper ? "%X" : "%x", type), radix: 16) else { return false }
             
         case BTYPE_DOT:
             guard isDouble else { return false }
-            guard self.console.totalDigits < 15 else { return false }
-            guard !self.console.contains(".") else { return false }
+            guard self.consoleString.totalDigits < 15 else { return false }
+            guard !self.consoleString.contains(".") else { return false }
             
         case BTYPE_NOT:
             guard isHex else { return false }
-            guard let _ = UInt64(self.console, radix: 16) else { return false }
+            guard let _ = UInt64(self.consoleString, radix: 16) else { return false }
             
         case BTYPE_LEFT_SHIFT, BTYPE_RIGHT_SHIFT:
             guard isHex else { return false }
-            guard let value = UInt64(self.console, radix: 16) else { return false }
+            guard let value = UInt64(self.consoleString, radix: 16) else { return false }
             guard value != 0 else { return false }
             
         case BTYPE_PLUS_MINUS:
-            guard isDecimal else { return false }
+            guard !isHex else { return false }
             
         case BTYPE_DELETE:
             guard !isClear else { return false }
@@ -435,7 +485,7 @@ struct CalculatorNumeric: View {
             guard self.lastType != type else { return false }
             
         case BTYPE_REMAINDER:
-            guard isInteger else { return false }
+            guard !isDouble else { return false }
             guard self.lastType != type else { return false }
 
         case BTYPE_AND ... BTYPE_XOR:
@@ -469,7 +519,7 @@ struct CalculatorNumeric: View {
                     self.console = "-" + String(type)
                 }
                 else {
-                    self.console += String(type)
+                    self.console = self.consoleString + String(type)
                 }
             }
             else {
@@ -479,7 +529,7 @@ struct CalculatorNumeric: View {
         //ABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD
         case BTYPE_A ... BTYPE_F:
             if self.isTyping && !self.isClear {
-                self.console += String(format: object.isUpper ? "%X" : "%x", type)
+                self.console = self.consoleString + String(format: object.isUpper ? "%X" : "%x", type)
             }
             else {
                 self.console = String(format:  object.isUpper ? "%X" : "%x", type)
@@ -487,33 +537,43 @@ struct CalculatorNumeric: View {
             
         //........................................
         case BTYPE_DOT:
-            self.console += "."
+            if self.isTyping {
+                self.console += "."
+            }
+            else {
+                self.console = "0."
+            }
             
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         case BTYPE_NOT:
-            let value = UInt64(self.console, radix: 16)!
-            self.console = String(format: object.isUpper ? "%llX" : "%llx", ~value)
-            
+            let value = UInt64(self.consoleString, radix: 16)!
+            self.console = self.x2String(~value)
+
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         case BTYPE_LEFT_SHIFT:
-            var value = UInt64(self.console, radix: 16)!
+            var value = UInt64(self.consoleString, radix: 16)!
             value <<= 1
-            self.console = String(format: object.isUpper ? "%llX" : "%llx", value)
-            
+            self.console = self.x2String(value)
+
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         case BTYPE_RIGHT_SHIFT:
-            var value = UInt64(self.console, radix: 16)!
+            var value = UInt64(self.consoleString, radix: 16)!
             value >>= 1
-            self.console = String(format: object.isUpper ? "%llX" : "%llx", value)
-            
+            self.console = self.x2String(value)
+
         //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
         case BTYPE_PLUS_MINUS:
-            if isNegative {
-                let substring = self.console.dropFirst()
-                self.console = String(substring)
+            if self.isTyping {
+                if isNegative {
+                    let substring = self.consoleString.dropFirst()
+                    self.console = String(substring)
+                }
+                else {
+                    self.console = "-" + self.consoleString
+                }
             }
             else {
-                self.console = "-" + self.console
+                self.console = "-0"
             }
             
         //DELDELDELDELDELDELDELDELDELDELDELDELDELD
@@ -522,7 +582,7 @@ struct CalculatorNumeric: View {
                 self.console = "0"  //Clear Console
             }
             else {
-                let substring = self.console.dropLast()
+                let substring = self.consoleString.dropLast()
                 self.console = String(substring)
                 if self.console.isEmpty {
                     self.console = "0"  //Clear Console
@@ -584,7 +644,7 @@ struct CalculatorNumeric: View {
                 return false
             }
             self.putResult()
-            
+
         default:
             fatalError("CalculatorNumeric.action: unexpected type: \(type)")
         }
@@ -670,7 +730,7 @@ struct CalculatorNumeric: View {
     }
     
     private func copy() {
-        UIPasteboard.general.string = self.console
+        UIPasteboard.general.string = self.consoleString
         object.sound()
         object.alertMessage = NSLocalizedString("Message_Copied_to_clipboard", comment: "")
         object.isAlerting = true
@@ -694,7 +754,7 @@ struct CalculatorNumeric: View {
         case Self.modeD:
             if let value = Double(text) {
                 if !value.isNaN && value >= Self.doubleMin && value <= Self.doubleMax {
-                    self.console = String(format: "%15.10F", value).trimmingCharacters(in: .whitespacesAndNewlines).strReplace
+                    self.console = self.d2String(value)
                     self.setConsole()
                     self.lastType = BTYPE_0
                     object.sound()
@@ -702,14 +762,14 @@ struct CalculatorNumeric: View {
             }
         case Self.modeI:
             if let value = Int64(text) {
-                self.console = String(format: "%lld", value)
+                self.console = self.i2String(value)
                 self.setConsole()
                 self.lastType = BTYPE_0
                 object.sound()
             }
         default: //modeX:
             if let value = UInt64(text, radix: 16) {
-                self.console = String(format: object.isUpper ? "%llX" : "%llx", value)
+                self.console = self.x2String(value)
                 self.setConsole()
                 self.lastType = BTYPE_0
                 object.sound()
