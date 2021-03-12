@@ -80,7 +80,7 @@ struct CalculatorUNIXTime: View {
                         Spacer()
                         Text("Overflow")
                             .font(.system(size: 12, weight: isOverflow ? .bold : .light))
-                            .foregroundColor(isOverflow ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
+                            .foregroundColor(Color.init(isOverflow ? .systemRed : .secondarySystemBackground))
                         Spacer()
                     }
                     

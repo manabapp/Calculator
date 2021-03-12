@@ -80,7 +80,7 @@ struct CalculatorIPAddress: View {
                 Spacer()
                 Text("Address invalid")
                     .font(.system(size: 12, weight: isInvalid ? .bold : .light))
-                    .foregroundColor(isInvalid ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
+                    .foregroundColor(Color.init(isInvalid ? .systemRed : .secondarySystemBackground))
                 Spacer()
             }
             .padding(.bottom, 5)

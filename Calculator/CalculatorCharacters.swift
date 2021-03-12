@@ -47,11 +47,11 @@ struct CalculatorCharacters: View {
                 Spacer()
                 Text("Non-hex code included")
                     .font(.system(size: 12, weight: isInvalid ? .bold : .light))
-                    .foregroundColor(isInvalid ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
+                    .foregroundColor(Color.init(isInvalid ? .systemRed : .secondarySystemBackground))
                 Spacer()
                 Text("Data too large")
                     .font(.system(size: 12, weight: isTooLarge ? .bold : .light))
-                    .foregroundColor(isTooLarge ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
+                    .foregroundColor(Color.init(isTooLarge ? .systemRed : .secondarySystemBackground))
                 Spacer()
             }
             .padding(.bottom, 5)

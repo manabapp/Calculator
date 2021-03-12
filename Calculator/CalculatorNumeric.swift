@@ -170,15 +170,15 @@ struct CalculatorNumeric: View {
                 Spacer()
                 Text("Out of range")
                     .font(.system(size: 12, weight: isOutOfRange ? .bold : .light))
-                    .foregroundColor(isOutOfRange ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
+                    .foregroundColor(Color.init(isOutOfRange ? .systemRed : .secondarySystemBackground))
                 Spacer()
                 Text("Overflow")
                     .font(.system(size: 12, weight: isOverflow ? .bold : .light))
-                    .foregroundColor(isOverflow ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
+                    .foregroundColor(Color.init(isOverflow ? .systemRed : .secondarySystemBackground))
                 Spacer()
                 Text("Division by zero")
                     .font(.system(size: 12, weight: isDivisionByZero ? .bold : .light))
-                    .foregroundColor(isDivisionByZero ? Color.init(.systemRed) : Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray))
+                    .foregroundColor(Color.init(isDivisionByZero ? .systemRed : .secondarySystemBackground))
                 Spacer()
             }
 #if DEBUG
