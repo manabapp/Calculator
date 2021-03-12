@@ -53,16 +53,16 @@ struct ByteField: View {
                     Text(Self.bitPattern[Int(self.byte >> 4 & 0x0F)])
                         .kerning(1)
                         .font(Font.custom("Courier", size: monospaceFontSize))
-                        .foregroundColor(Color.init(.white))
+                        .foregroundColor(Color.init(UIColor.label))
                     Text(Self.bitPattern[Int(self.byte & 0x0F)])
                         .kerning(1)
                         .font(Font.custom("Courier", size: monospaceFontSize))
-                        .foregroundColor(Color.init(.white))
+                        .foregroundColor(Color.init(UIColor.label))
                 }
             }
             Text(String(format: object.isUpper ? "%01X %01X" : "%01x %01x", (self.byte >> 4) & 0x0F, self.byte & 0x0F))
                 .font(Font.custom("Menlo", size: Self.fontSize))
-                .foregroundColor(Color.init(.lightGray))
+                .foregroundColor(Color.init(CalculatorSharedObject.isDark ? .lightGray : .darkGray))
                 .padding(.top, -2)
         }
     }

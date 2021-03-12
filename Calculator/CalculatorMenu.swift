@@ -138,7 +138,7 @@ fileprivate struct AboutApp: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 70, alignment: .center)
-                Text("Calculator")
+                Text("Calculation")
                     .font(.system(size: 26, weight: .bold))
                 Text("version " + object.appVersion)
                     .font(.system(size: 16))

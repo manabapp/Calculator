@@ -8,7 +8,7 @@
 
 Message_Copied_to_clipboard = "クリップボードにコピーしました。";
 Message_CantOpenURL = "インターネットのサイトを開くことができません。";
-Message_NotSupport = "現在のバージョンではサポートされていません。";
+Message_IPv6NotSupport = "現在のバージョンでは、IPv6 はサポートされていません。";
 
 Button_Copy = "コピー";
 Button_Paste = "貼り付け";
@@ -24,9 +24,9 @@ Label_UNIX_Time = "時間変換";
 Label_IP_Address = "アドレス計算";
 Label_Characters = "文字列変換";
 Label_Menu = "メニュー";
-Label_Calculator_D = "10 進数 / Double";
-Label_Calculator_I = "10 進数 / Int64";
-Label_Calculator_X = "16 進数 / UInt64";
+Label_Calculator_D = "10 / Double";
+Label_Calculator_I = "10 / Int64";
+Label_Calculator_X = "16 / UInt64";
 Label_Local_Time = "ローカル時間";
 Label_UTC = "協定世界時";
 Label_TimeZone = "タイムゾーン: ";
@@ -57,13 +57,13 @@ Header_TYPE_SWITCHING = "型の切り替え";
 
 Footer_UI_DESIGN = "アプリのデザインを選択します。\n";
 Footer_IDLE_TIMER = "計算中にスリープ状態になるのを避けるため、iOS のアイドルタイマーを無効にします。\n";
-Footer_SOUND_EFFECTS = "ボタンをタップしたときにクリック音を鳴らします。さらに、エラー発生時（例：Overflow）にはバイブレーションを鳴らします。\n";
+Footer_SOUND_EFFECTS = "ボタンをタップしたときにクリック音を鳴らします。\n";
 Footer_THOUSANDS_SEPARATOR = "3 桁毎にカンマ区切りで数値（10進数）を表示します。\n";
 Footer_HEXADECIMAL_LETTER = "16 進数におけるアルファベット表記を指定します。";
 
-Specification_General1 = "演算子の優先順位はすべて同じであり、常に先頭から評価します。\n例：3 + 2 * 2 = 10";
-Specification_DoubleType1 = "1.234e+16 のような指数表示は用いません。\nそのため、倍精度の有効桁数である 15 桁の範囲内で計算を行います。";
-Specification_DoubleType2 = "小数部の有効桁数は第 10 位です。";
+Specification_General1 = "二項演算子の優先順位はすべて同じであり、常に先頭から評価します。\n例：3 + 2 * 2 = 10";
+Specification_DoubleType1 = "1.234e+16 のような指数表示は用いません。\nそのため、倍精度浮動小数点の有効桁数である 15 桁の範囲内で計算を行います。";
+Specification_DoubleType2 = "小数部の最大桁数は第 10 位です。";
 Specification_DoubleType3 = "結果が 0.0000000001 より小さな正数（または、-0.0000000001 より大きな負数）となる演算は、結果を 0 とします。";
 Specification_DoubleType4 = "ビット列は、倍精度の IEEE 754 形式で表示されます。";
 Specification_ErrorOperation1 = "0 による除算および剰余演算はキャンセルされます。";

@@ -88,8 +88,8 @@ struct DataScreen: UIViewRepresentable {
         myTextArea.delegate = context.coordinator
         myTextArea.font = isDecodable ? UIFont(name: "Menlo", size: DataScreen.fontSize * fontRate) : UIFont.boldSystemFont(ofSize: (DataScreen.fontSize + 1.0) * fontRate)
         myTextArea.textAlignment = isDecodable ? .left : .center
-        myTextArea.backgroundColor = UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)
-        myTextArea.textColor = UIColor.white
+        myTextArea.backgroundColor = UIColor.secondarySystemBackground
+        myTextArea.textColor = UIColor.label
         myTextArea.text = text
         return myTextArea
     }

@@ -109,8 +109,8 @@ struct CalculatorUNIXTime: View {
                             Image(systemName: "chevron.compact.up")
                                 .font(.system(size: 20, weight: .semibold))
                                 .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
-                                .foregroundColor(Color.init(.lightGray))
-                                .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                                .foregroundColor(Color.init(CalculatorSharedObject.isDark ? .lightGray : .darkGray))
+                                .background(Color.init(UIColor.secondarySystemBackground))
                                 .cornerRadius(object.isStandard ? 0 : 8)
                         }
                         else {
@@ -121,7 +121,7 @@ struct CalculatorUNIXTime: View {
                                 ByteField(byte: UInt8(self.time >>  0 & 0xFF), label:  "0")
                             }
                             .frame(width: object.deviceWidth, height: ByteField.height1, alignment: .center)
-                            .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                            .background(Color.init(UIColor.secondarySystemBackground))
                         }
                     }
                     

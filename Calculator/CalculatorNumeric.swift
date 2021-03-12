@@ -152,13 +152,18 @@ struct CalculatorNumeric: View {
                 case Self.modeI: self.console = self.i2String(consoleI)
                 default:         self.console = self.x2String(consoleX)
                 }
-                self.memoryResultD = nil
-                self.memoryResultI = nil
-                self.memoryResultX = nil
                 self.operatorType = nil
                 self.memoryOperandD = 0.0
                 self.memoryOperandI = 0
                 self.memoryOperandX = 0
+                if isTyping {
+                    self.memoryResultD = nil
+                    self.memoryResultI = nil
+                    self.memoryResultX = nil
+                }
+                else {
+                    self.setResult()
+                }
             }
             
             HStack {
@@ -200,8 +205,8 @@ struct CalculatorNumeric: View {
                     Image(systemName: "chevron.compact.up")
                         .font(.system(size: 20, weight: .semibold))
                         .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
-                        .foregroundColor(Color.init(.lightGray))
-                        .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                        .foregroundColor(Color.init(CalculatorSharedObject.isDark ? .lightGray : .darkGray))
+                        .background(Color.init(UIColor.secondarySystemBackground))
                         .cornerRadius(object.isStandard ? 0 : 8)
                 }
                 else {
@@ -224,7 +229,7 @@ struct CalculatorNumeric: View {
                         }
                     }
                     .frame(width: object.deviceWidth, height: ByteField.height2, alignment: .center)
-                    .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                    .background(Color.init(UIColor.secondarySystemBackground))
                 }
             }
             
@@ -493,7 +498,10 @@ struct CalculatorNumeric: View {
             guard self.lastType != type else { return false }
 
         case BTYPE_ENTER:
-            guard let _ = operatorType else { return false }
+            guard let _ = operatorType else {
+                self.setResult()
+                return false
+            }
             guard hasMemoryResult || isTyping else { return false }
             
         default:
@@ -616,7 +624,7 @@ struct CalculatorNumeric: View {
         case BTYPE_PLUS ... BTYPE_XOR:
             if self.isTyping {
                 self.setOperand()
-                if hasMemoryResult {
+                if hasMemoryResult && self.operatorType != nil {
                     if !self.calculate() {
                         return false
                     }

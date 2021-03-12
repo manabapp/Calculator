@@ -69,7 +69,7 @@ struct CalculatorIPAddress: View {
             .padding(.horizontal, 1)
             .onChange(of: mode) { mode in
                 if mode == Self.modeIPv6 {
-                    self.object.alertMessage = NSLocalizedString("Message_NotSupport", comment: "")
+                    self.object.alertMessage = NSLocalizedString("Message_IPv6NotSupport", comment: "")
                     self.object.alertDetail = ""
                     self.object.isPopAlert = true
                     self.mode = Self.modeIPv4
@@ -103,8 +103,8 @@ struct CalculatorIPAddress: View {
                     Image(systemName: "chevron.compact.up")
                         .font(.system(size: 20, weight: .semibold))
                         .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
-                        .foregroundColor(Color.init(.lightGray))
-                        .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                        .foregroundColor(Color.init(CalculatorSharedObject.isDark ? .lightGray : .darkGray))
+                        .background(Color.init(UIColor.secondarySystemBackground))
                         .cornerRadius(object.isStandard ? 0 : 8)
                 }
                 else {
@@ -123,7 +123,7 @@ struct CalculatorIPAddress: View {
                         }
                     }
                     .frame(width: object.deviceWidth, height: ByteField.height2, alignment: .center)
-                    .background(Color.init(UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0)))
+                    .background(Color.init(UIColor.secondarySystemBackground))
                 }
             }
             

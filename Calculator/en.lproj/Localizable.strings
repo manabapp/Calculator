@@ -8,7 +8,7 @@
 
 Message_Copied_to_clipboard = "Copied to clipboard.";
 Message_CantOpenURL = "Can't open the Internet site.";
-Message_NotSupport = "Not supported in the current version.";
+Message_IPv6NotSupport = "IPv6 not supported in the current version.";
 
 Button_Copy = "Copy";
 Button_Paste = "Paste";
@@ -24,9 +24,9 @@ Label_UNIX_Time = "UNIX Time";
 Label_IP_Address = "IP Address";
 Label_Characters = "Characters";
 Label_Menu = "Menu";
-Label_Calculator_D = "Decimal / Double";
-Label_Calculator_I = "Integer / Int64";
-Label_Calculator_X = "Hex / UInt64";
+Label_Calculator_D = "10 / Double";
+Label_Calculator_I = "10 / Int64";
+Label_Calculator_X = "16 / UInt64";
 Label_Local_Time = "Local Time";
 Label_UTC = "UTC";
 Label_TimeZone = "TimeZone: ";
@@ -57,13 +57,13 @@ Header_TYPE_SWITCHING = "Type switching";
 
 Footer_UI_DESIGN = "Selects the style of the app's design.\n";
 Footer_IDLE_TIMER = "To avoid going into sleep mode during calculation, turns off iOS's idle timer.\n";
-Footer_SOUND_EFFECTS = "Makes a clicking sound when tapping the button. In addition, sounds a vibration when an error occurs (ex. Overflow).\n";
+Footer_SOUND_EFFECTS = "Makes a clicking sound when tapping the button.\n";
 Footer_THOUSANDS_SEPARATOR = "Displays numbers separated by commas every 3 digits.\n";
 Footer_HEXADECIMAL_LETTER = "Specifies the alphabetical notation for hexadecimal.";
 
-Specification_General1 = "Priority of all operators are as same, and always evaluate from the beginning.\nex. 3 + 2 * 2 = 10";
-Specification_DoubleType1 = "Doesn't use exponential notation such as 1.234e+16.\nTherefore, the calculation is performed within the range of 15 digits, which is the number of effective digits of double precision.";
-Specification_DoubleType2 = "The effective digits in the decimal part is the 10th place.";
+Specification_General1 = "All binary operators have the same precedence.\nOperation always evaluate from the beginning. (ex. 3 + 2 * 2 = 10)";
+Specification_DoubleType1 = "Doesn't use exponential notation such as 1.234e+16.\nTherefore, the calculation is performed within the range of 15 digits, which is the number of effective digits of double precision floating point.";
+Specification_DoubleType2 = "The maximum digits in the decimal part is the 10th place.";
 Specification_DoubleType3 = "For an operation that results in a positive number less than 0.0000000001 (or a negative number greater than -0.0000000001), the operational result is zero.";
 Specification_DoubleType4 = "Bit array is displayed in double-precision IEEE 754 format.";
 Specification_ErrorOperation1 = "Division and modulo operations by 0 are canceled.";
