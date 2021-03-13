@@ -6,7 +6,13 @@
   
 */
 
-Message_Copied_to_clipboard = "クリップボードにコピーしました。";
+Message_Copied_to_clipboard = "クリップボードにコピーしました";
+Message_Out_of_range = "数値が範囲外です";
+Message_Overflow = "オーバーフロー（Overflow）";
+Message_Division_by_zero = "ゼロ除算（Division by zero）";
+Message_Address_invalid = "アドレスが不正です";
+Message_Non-hex_code_included = "非 16 進コードが含まれています";
+Message_Data_too_large = "データが大き過ぎます";
 Message_CantOpenURL = "インターネットのサイトを開くことができません。";
 Message_IPv6NotSupport = "現在のバージョンでは、IPv6 はサポートされていません。";
 

@@ -72,9 +72,13 @@ struct ContentView: View {
                     .font(.system(size: 16, weight: .semibold))
                     .padding(7)
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                    .foregroundColor(Color(.systemBackground))
-                    .background(Color(.label).opacity(0.85))
+                    .foregroundColor(Color(.label))
+                    .background(Color(CalculatorSharedObject.isDark ? UIColor(red: 0.110, green: 0.110, blue: 0.118, alpha: 1.0) : UIColor(red: 0.949, green: 0.949, blue: 0.969, alpha: 1.0)).opacity(0.85))
                     .cornerRadius(20.0)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20.0)
+                            .stroke(Color.init(.label), lineWidth: 2)
+                    )
                 Spacer()
             }
             .padding(.top, 4)

@@ -6,7 +6,13 @@
   
 */
 
-Message_Copied_to_clipboard = "Copied to clipboard.";
+Message_Copied_to_clipboard = "Copied to clipboard";
+Message_Out_of_range = "Out of range";
+Message_Overflow = "Overflow";
+Message_Division_by_zero = "Division by zero";
+Message_Address_invalid = "Address invalid";
+Message_Non-hex_code_included = "Non-hex code included";
+Message_Data_too_large = "Data too large";
 Message_CantOpenURL = "Can't open the Internet site.";
 Message_IPv6NotSupport = "IPv6 not supported in the current version.";
 

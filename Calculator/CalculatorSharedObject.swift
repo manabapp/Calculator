@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AudioToolbox
+import StoreKit
 
 class CalculatorSharedObject: ObservableObject {
     static var isJa: Bool { Locale.preferredLanguages.first!.hasPrefix("ja") }
@@ -28,8 +29,7 @@ class CalculatorSharedObject: ObservableObject {
     @Published var alertMessage: String = ""
     @Published var alertDetail: String = ""
     @Published var isPopAlert: Bool = false
-//    @Published var byteFieldsSwitch: Bool = true
-
+    
     @Published var appSettingUIStyle: Int = CalculatorSharedObject.uiStyleStandard {
         didSet {
             UserDefaults.standard.set(appSettingUIStyle, forKey: "appSettingUIStyle")
@@ -83,7 +83,24 @@ class CalculatorSharedObject: ObservableObject {
             AudioServicesPlaySystemSound(SystemSoundID(isError ? 1053 : 1104)) //Sounds
 //            AudioServicesPlaySystemSound(SystemSoundID(isError ? 1161 : 1519)) //Vibrates
         }
+        if isError {
+            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                SKStoreReviewController.requestReview(in: scene)
+            }
+        }
     }
+    
+    func alert(_ message: String) {
+        self.alertMessage = message
+        self.isAlerting = true
+        DispatchQueue.global().async {
+            sleep(1)
+            DispatchQueue.main.async {
+                self.isAlerting = false
+            }
+        }
+    }
+
     init() {
         CalculatorUNIXTime.initTime()
         appSettingUIStyle = UserDefaults.standard.integer(forKey: "appSettingUIStyle")

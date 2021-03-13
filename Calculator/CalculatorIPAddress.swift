@@ -11,7 +11,6 @@ struct CalculatorIPAddress: View {
     @EnvironmentObject var object: CalculatorSharedObject
     @State var mode: Int = Self.modeIPv4
     @State var console: String = ""
-    @State var isInvalid: Bool = false
     @State var ipaddr: UInt32 = 0
     @State var netmask: UInt32 = 0
     @State var prefixlen: Int = 0
@@ -24,7 +23,7 @@ struct CalculatorIPAddress: View {
     
     private var buttonSpace: CGFloat { object.isStandard ? 1.0 : 5.0 }
     private var isClear: Bool { self.console.isEmpty }
-    private var isAllClear: Bool  { self.isClear && !self.isInvalid && self.netaddr == nil && self.subnetmask == nil && self.broadcast == nil }
+    private var isAllClear: Bool  { self.isClear && self.netaddr == nil && self.subnetmask == nil && self.broadcast == nil }
     private var hasSlash: Bool { self.console.contains("/") }
     private var consoleField: Text { self.isClear ? Text("           192.168.10.0/24").foregroundColor(Color.init(CalculatorSharedObject.isDark ? .darkGray : .lightGray)) : Text(self.console) }
     
@@ -75,14 +74,6 @@ struct CalculatorIPAddress: View {
                     self.mode = Self.modeIPv4
                 }
             }
-            
-            HStack {
-                Spacer()
-                Text("Address invalid")
-                    .font(.system(size: 12, weight: isInvalid ? .bold : .light))
-                    .foregroundColor(Color.init(isInvalid ? .systemRed : .secondarySystemBackground))
-                Spacer()
-            }
             .padding(.bottom, 5)
             
             addressField(label: "Label_CIDR", addr: self.netaddr, prefix: "/\(prefixLen)")
@@ -132,7 +123,7 @@ struct CalculatorIPAddress: View {
                     Button(action: { tap(BTYPE_7) }) { Bbody(t: "7", c: 5) }
                     Button(action: { tap(BTYPE_8) }) { Bbody(t: "8", c: 5) }
                     Button(action: { tap(BTYPE_9) }) { Bbody(t: "9", c: 5) }
-                    Button(action: { tap(BTYPE_CLEAR) }) { Bbody(t: "AC", c: 5, w: 2, b: .lightGray, f: .black) }
+                    Button(action: { tap(BTYPE_CLEAR) }) { Bbody(t: "C", c: 5, w: 2, b: .lightGray, f: .black) }
                 }
                 HStack(spacing: buttonSpace) {
                     VStack(spacing: buttonSpace) {
@@ -262,7 +253,6 @@ struct CalculatorIPAddress: View {
         //CACCACCACCACCACCACCACCACCACCACCACCACCACC
         case BTYPE_CLEAR:
             guard !isAllClear else { return false }
-            isInvalid = false
             netaddr = nil
             subnetmask = nil
             broadcast = nil
@@ -270,22 +260,21 @@ struct CalculatorIPAddress: View {
             
         //========================================
         case BTYPE_ENTER:
-            isInvalid = false
             netaddr = nil
             subnetmask = nil
             broadcast = nil
             guard !isClear else { return false }
             if !hasSlash {
                 guard self.console.isValidIPv4Format else {
+                    object.alert(NSLocalizedString("Message_Address_invalid", comment: ""))
                     object.sound(isError: true)
-                    isInvalid = true
                     return false
                 }
                 return true
             }
             guard self.console.isValidCidrFormat else {
+                object.alert(NSLocalizedString("Message_Address_invalid", comment: ""))
                 object.sound(isError: true)
-                isInvalid = true
                 return false
             }
             netaddr = ipaddr & netmask
@@ -303,15 +292,7 @@ struct CalculatorIPAddress: View {
             return
         }
         UIPasteboard.general.string = self.console
-        object.sound()
-        object.alertMessage = NSLocalizedString("Message_Copied_to_clipboard", comment: "")
-        object.isAlerting = true
-        DispatchQueue.global().async {
-            sleep(1)
-            DispatchQueue.main.async {
-                object.isAlerting = false
-            }
-        }
+        object.alert(NSLocalizedString("Message_Copied_to_clipboard", comment: ""))
     }
     
     private func paste() {

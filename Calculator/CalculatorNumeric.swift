@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Foundation
-import StoreKit
 
 let BTYPE_0: Int = 0
 let BTYPE_1: Int = 1
@@ -51,9 +50,6 @@ struct CalculatorNumeric: View {
     
     @State var lastType: Int = BTYPE_0
     @State var operatorType: Int? = nil //BTYPE_PLUS(+), _MINUS(-), _MULTIPLY(*), _DIVIDE(/), _REMINDER(%), _AND(&), _OR(|), or _XOR(^)
-    @State var isOutOfRange: Bool = false
-    @State var isOverflow: Bool = false
-    @State var isDivisionByZero: Bool = false
     @State var console: String = "0"
     @State var consoleD: Double = 0.0
     @State var consoleI: Int64 = 0
@@ -77,7 +73,7 @@ struct CalculatorNumeric: View {
         }
     }
     private var isClear: Bool     { self.console == "0" }
-    private var isAllClear: Bool  { self.isClear && self.operatorType == nil && !self.hasMemoryResult && !self.isOutOfRange && !self.isOverflow && !self.isDivisionByZero }
+    private var isAllClear: Bool  { self.isClear && self.operatorType == nil && !self.hasMemoryResult }
     private var isNegative : Bool { self.console.hasPrefix("-") }
     private var isHex: Bool       { self.mode == Self.modeX }
     private var isDouble: Bool    { self.mode == Self.modeD }
@@ -164,22 +160,6 @@ struct CalculatorNumeric: View {
                 else {
                     self.setResult()
                 }
-            }
-            
-            HStack {
-                Spacer()
-                Text("Out of range")
-                    .font(.system(size: 12, weight: isOutOfRange ? .bold : .light))
-                    .foregroundColor(Color.init(isOutOfRange ? .systemRed : .secondarySystemBackground))
-                Spacer()
-                Text("Overflow")
-                    .font(.system(size: 12, weight: isOverflow ? .bold : .light))
-                    .foregroundColor(Color.init(isOverflow ? .systemRed : .secondarySystemBackground))
-                Spacer()
-                Text("Division by zero")
-                    .font(.system(size: 12, weight: isDivisionByZero ? .bold : .light))
-                    .foregroundColor(Color.init(isDivisionByZero ? .systemRed : .secondarySystemBackground))
-                Spacer()
             }
 #if DEBUG
             switch mode {
@@ -420,13 +400,7 @@ struct CalculatorNumeric: View {
     private func tap(_ type: Int) {
         let willAllClear = (type == BTYPE_CLEAR && isClear)
         if self.canTyping(type) {
-            let ret = self.action(type)
-            object.sound(isError: !ret)
-            if !ret {
-                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                    SKStoreReviewController.requestReview(in: scene)
-                }
-            }
+            self.action(type)
         }
         self.setConsole()
         self.lastType = willAllClear ? BTYPE_0 : type
@@ -510,7 +484,7 @@ struct CalculatorNumeric: View {
         return true
     }
     
-    private func action(_ type: Int) -> Bool {
+    private func action(_ type: Int) {
         if type < BTYPE_DELETE && self.lastType == BTYPE_ENTER {
             self.memoryResultD = nil
             self.memoryResultI = nil
@@ -604,9 +578,6 @@ struct CalculatorNumeric: View {
         case BTYPE_CLEAR:
             if isClear {
                 self.lastType = BTYPE_0
-                self.isOutOfRange = false
-                self.isOverflow = false
-                self.isDivisionByZero = false
                 self.memoryResultD = nil
                 self.memoryResultI = nil
                 self.memoryResultX = nil
@@ -626,7 +597,7 @@ struct CalculatorNumeric: View {
                 self.setOperand()
                 if hasMemoryResult && self.operatorType != nil {
                     if !self.calculate() {
-                        return false
+                        return
                     }
                 }
                 else {
@@ -649,14 +620,14 @@ struct CalculatorNumeric: View {
                 self.setResult()
             }
             if !self.calculate() {
-                return false
+                return
             }
             self.putResult()
 
         default:
             fatalError("CalculatorNumeric.action: unexpected type: \(type)")
         }
-        return true
+        object.sound()
     }
     
     private func calculate() -> Bool {
@@ -675,11 +646,13 @@ struct CalculatorNumeric: View {
             default:             fatalError("CalculatorNumeric.calculate: unexpected operator: \(op)")
             }
             if value.isInfinite || value.isNaN {
-                isDivisionByZero = true
+                object.alert(NSLocalizedString("Message_Division_by_zero", comment: ""))
+                object.sound(isError: true)
                 return false
             }
             if value < Self.doubleMin || value > Self.doubleMax {
-                isOutOfRange = true
+                object.alert(NSLocalizedString("Message_Out_of_range", comment: ""))
+                object.sound(isError: true)
                 return false
             }
             if value < Self.doublePlusMin && value > Self.doubleMinusMax {
@@ -701,10 +674,12 @@ struct CalculatorNumeric: View {
             }
             if overflow {
                 if memoryOperandI == 0 {
-                    isDivisionByZero = true
+                    object.alert(NSLocalizedString("Message_Division_by_zero", comment: ""))
+                    object.sound(isError: true)
                 }
                 else {
-                    isOverflow = true
+                    object.alert(NSLocalizedString("Message_Overflow", comment: ""))
+                    object.sound(isError: true)
                 }
                 return false
             }
@@ -725,10 +700,12 @@ struct CalculatorNumeric: View {
             }
             if overflow {
                 if memoryOperandX == 0 {
-                    isDivisionByZero = true
+                    object.alert(NSLocalizedString("Message_Division_by_zero", comment: ""))
+                    object.sound(isError: true)
                 }
                 else {
-                    isOverflow = true
+                    object.alert(NSLocalizedString("Message_Overflow", comment: ""))
+                    object.sound(isError: true)
                 }
                 return false
             }
@@ -739,15 +716,7 @@ struct CalculatorNumeric: View {
     
     private func copy() {
         UIPasteboard.general.string = self.consoleString
-        object.sound()
-        object.alertMessage = NSLocalizedString("Message_Copied_to_clipboard", comment: "")
-        object.isAlerting = true
-        DispatchQueue.global().async {
-            sleep(1)
-            DispatchQueue.main.async {
-                object.isAlerting = false
-            }
-        }
+        object.alert(NSLocalizedString("Message_Copied_to_clipboard", comment: ""))
     }
     
     private func paste() {

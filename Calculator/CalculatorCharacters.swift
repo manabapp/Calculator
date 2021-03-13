@@ -23,11 +23,10 @@ struct CalculatorCharacters: View {
     @State var isOtherEditable: Bool = false  //Fixed
     @State var isOtherDecodable: Bool = true  //Fixed
     @State var isInvalid: Bool = false
-    @State var isTooLarge: Bool = false
     @State var isKeyboardOpened: Bool = false
     
     private var buttonSpace: CGFloat { object.isStandard ? 1.0 : 5.0 }
-    private var isClearX: Bool { self.hexText.isEmpty && self.data.count == 0 && !self.isInvalid && !self.isTooLarge }
+    private var isClearX: Bool { self.hexText.isEmpty && self.data.count == 0 && !self.isInvalid }
     private var isClearA: Bool { self.asciiText.isEmpty && self.isAsciiEditable && self.isAsciiDecodable }
     
     func update(changed: Bool) {
@@ -42,18 +41,6 @@ struct CalculatorCharacters: View {
             .frame(height: 32)
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal, 1)
-            
-            HStack {
-                Spacer()
-                Text("Non-hex code included")
-                    .font(.system(size: 12, weight: isInvalid ? .bold : .light))
-                    .foregroundColor(Color.init(isInvalid ? .systemRed : .secondarySystemBackground))
-                Spacer()
-                Text("Data too large")
-                    .font(.system(size: 12, weight: isTooLarge ? .bold : .light))
-                    .foregroundColor(Color.init(isTooLarge ? .systemRed : .secondarySystemBackground))
-                Spacer()
-            }
             .padding(.bottom, 5)
             
             HStack(alignment: .bottom) {
@@ -204,9 +191,8 @@ struct CalculatorCharacters: View {
             self.data = after.data(using: .utf8)!
         }
         
-        isTooLarge = false
         if self.data.count > 65536 {
-            isTooLarge = true
+            object.alert(NSLocalizedString("Message_Data_too_large", comment: ""))
             object.sound(isError: true)
             return
         }
@@ -234,6 +220,7 @@ struct CalculatorCharacters: View {
             hexString += (count + 1) < length ? String(textArray[count + 1]) : "0"
             guard let uint8 = UInt8(hexString, radix: 16) else {
                 self.isInvalid = true
+                object.alert(NSLocalizedString("Message_Non-hex_code_included", comment: ""))
                 object.sound(isError: true)
                 return
             }
@@ -242,9 +229,8 @@ struct CalculatorCharacters: View {
         }
         self.data = Data(uint8array)
         
-        isTooLarge = false
         if self.data.count > 65536 {
-            isTooLarge = true
+            object.alert(NSLocalizedString("Message_Data_too_large", comment: ""))
             object.sound(isError: true)
             return
         }
@@ -364,15 +350,7 @@ struct CalculatorCharacters: View {
             guard !self.asciiText.isEmpty else { return }
             UIPasteboard.general.string = self.asciiText
         }
-        object.sound()
-        object.alertMessage = NSLocalizedString("Message_Copied_to_clipboard", comment: "")
-        object.isAlerting = true
-        DispatchQueue.global().async {
-            sleep(1)
-            DispatchQueue.main.async {
-                object.isAlerting = false
-            }
-        }
+        object.alert(NSLocalizedString("Message_Copied_to_clipboard", comment: ""))
     }
     private func paste(isHex: Bool) {
         guard let text = UIPasteboard.general.string else { return }
@@ -393,7 +371,6 @@ struct CalculatorCharacters: View {
             self.hexText = ""
             self.charsText = ""
             self.isInvalid = false
-            self.isTooLarge = false
         }
         else {
             guard !isClearA else { return }

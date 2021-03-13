@@ -12,7 +12,6 @@ struct CalculatorUNIXTime: View {
     @State var date: Date = Date(timeIntervalSince1970: 0)
     @State var time: UInt32 = 0
     @State var console: String = "0"
-    @State var isOverflow: Bool = false
     @State var year: Int = 0
     @State var month: Int = 0
     @State var day: Int = 0
@@ -48,7 +47,7 @@ struct CalculatorUNIXTime: View {
     private var consoleString: String { self.console.replacingOccurrences(of:",", with:"") }
     private var time2String: String { object.appSetting1000Separator ? String.localizedStringWithFormat("%lld", self.time) : String(format: "%lld", self.time) }
     private var isClear: Bool { self.console == "0" }
-    private var isAllClear: Bool  { self.isClear && self.time == 0 && !self.isOverflow }
+    private var isAllClear: Bool  { self.isClear && self.time == 0 }
     private var isLocal: Bool { self.mode == Self.modeLocal }
     private var calendar: Calendar { self.isLocal ? Self.calendarLocal : Self.calendarUTC }
     private var formatter: DateFormatter { self.isLocal ? Self.formatterLocal : Self.formatterUTC }
@@ -75,15 +74,6 @@ struct CalculatorUNIXTime: View {
                     .onChange(of: object.unixTimeMode) { _ in
                         setDate()
                     }
-                    
-                    HStack {
-                        Spacer()
-                        Text("Overflow")
-                            .font(.system(size: 12, weight: isOverflow ? .bold : .light))
-                            .foregroundColor(Color.init(isOverflow ? .systemRed : .secondarySystemBackground))
-                        Spacer()
-                    }
-                    
                     Spacer()
                     
                     VStack(alignment: .trailing) {
@@ -130,7 +120,7 @@ struct CalculatorUNIXTime: View {
                             Button(action: { tap(BTYPE_7) }) { Bbody(t: "7", c: 5) }
                             Button(action: { tap(BTYPE_8) }) { Bbody(t: "8", c: 5) }
                             Button(action: { tap(BTYPE_9) }) { Bbody(t: "9", c: 5) }
-                            Button(action: { tap(BTYPE_CLEAR) }) { Bbody(t: "AC", c: 5, w: 2, b: .lightGray, f: .black) }
+                            Button(action: { tap(BTYPE_CLEAR) }) { Bbody(t: "C", c: 5, w: 2, b: .lightGray, f: .black) }
                         }
                         HStack(spacing: buttonSpace) {
                             Button(action: { tap(BTYPE_4) }) { Bbody(t: "4", c: 5) }
@@ -162,7 +152,7 @@ struct CalculatorUNIXTime: View {
                 
                 VStack(spacing: 0) {
                     HStack(spacing: buttonSpace) {
-                        Button(action: { tap(BTYPE_CLEAR) }) { HorizontalBbody(t: "AC", c: 4, b: .lightGray, f: .black) }
+                        Button(action: { tap(BTYPE_CLEAR) }) { HorizontalBbody(t: "C", c: 4, b: .lightGray, f: .black) }
                         Button(action: { tap(BTYPE_NOW) }) { HorizontalBbody(t: "now", c: 4, b: .lightGray, f: .black) }
                         Button(action: { tap(BTYPE_2038) }) { HorizontalBbody(t: "2038", c: 4, b: .lightGray, f: .black) }
                         Button(action: { tap(BTYPE_2106) }) { HorizontalBbody(t: "2106", c: 4, b: .lightGray, f: .black) }
@@ -252,9 +242,7 @@ struct CalculatorUNIXTime: View {
     
     private func tap(_ type: Int) {
         if self.action(type) {
-            self.isOverflow = false
             object.sound()
-//            self.console = String.localizedStringWithFormat("%lld", self.time)
             self.console = self.time2String
         }
     }
@@ -311,7 +299,6 @@ struct CalculatorUNIXTime: View {
         //CACCACCACCACCACCACCACCACCACCACCACCACCACC
         case BTYPE_CLEAR:
             guard !isAllClear else { return false }
-            isOverflow = false
             self.time = 0
             self.date = Date(timeIntervalSince1970: 0)
             self.setDate()
@@ -324,15 +311,7 @@ struct CalculatorUNIXTime: View {
     
     private func copy() {
         UIPasteboard.general.string = self.consoleString
-        object.sound()
-        object.alertMessage = NSLocalizedString("Message_Copied_to_clipboard", comment: "")
-        object.isAlerting = true
-        DispatchQueue.global().async {
-            sleep(1)
-            DispatchQueue.main.async {
-                object.isAlerting = false
-            }
-        }
+        object.alert(NSLocalizedString("Message_Copied_to_clipboard", comment: ""))
     }
     
     private func paste() {
@@ -344,7 +323,6 @@ struct CalculatorUNIXTime: View {
             return
         }
         if let value = UInt32(text) {
-            self.isOverflow = false
             self.console = String(format: "%lld", value)
             self.time = value
             self.date = Date(timeIntervalSince1970: Double(self.time))
@@ -365,18 +343,15 @@ struct CalculatorUNIXTime: View {
     private func setUnixTime() {
         guard let calDate = calendar.date(from: DateComponents(year: self.year + 1970, month: self.month + 1, day: self.day + 1,
                                                                hour: self.hour, minute: self.minute, second: self.second)) else {
-            object.sound(isError: true)
             return
         }
         if calDate < Self.dateMin || calDate > Self.dateMax {
-            self.isOverflow = true
+            object.alert(NSLocalizedString("Message_Overflow", comment: ""))
             object.sound(isError: true)
             return
         }
-        self.isOverflow = false
         self.date = calDate
         self.time = UInt32(self.date.timeIntervalSince1970)
-//        self.console = String.localizedStringWithFormat("%lld", self.time)
         self.console = self.time2String
         self.setDate()
     }
