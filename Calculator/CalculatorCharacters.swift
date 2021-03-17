@@ -25,7 +25,8 @@ struct CalculatorCharacters: View {
     @State var isInvalid: Bool = false
     @State var isKeyboardOpened: Bool = false
     
-    private var buttonSpace: CGFloat { object.isStandard ? 1.0 : 5.0 }
+    private var buttonSpace: CGFloat { object.isStandard ? 3.0 : 1.0 }
+    private var buttonMargin: CGFloat { object.isStandard ? 3.0 : 0.0 }
     private var isClearX: Bool { self.hexText.isEmpty && self.data.count == 0 && !self.isInvalid }
     private var isClearA: Bool { self.asciiText.isEmpty && self.isAsciiEditable && self.isAsciiDecodable }
     
@@ -43,32 +44,34 @@ struct CalculatorCharacters: View {
             .padding(.horizontal, 1)
             .padding(.bottom, 5)
             
-            HStack(alignment: .bottom) {
-                Text("Ascii")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(Color.init(UIColor.systemGray))
-                    .padding(.leading, 4)
-                Spacer()
-                Picker("", selection: self.$returnCodeIndex) {
-                    Text("Label_LF").tag(0)
-                    Text("Label_CRLF").tag(1)
+            VStack(spacing: 0) {
+                HStack(alignment: .bottom) {
+                    Text("Ascii")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(Color.init(CalculatorSharedObject.isDark ? .lightGray : .darkGray))
+                        .padding(.leading, 4)
+                    Spacer()
+                    Picker("", selection: self.$returnCodeIndex) {
+                        Text("Label_LF").tag(0)
+                        Text("Label_CRLF").tag(1)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .frame(width: 200, height: 32, alignment: .bottomTrailing)
+                    .padding(.trailing, 4)
+                    .disabled(!self.isAsciiEditable)
                 }
-                .pickerStyle(SegmentedPickerStyle())
-                .frame(width: 200, height: 32, alignment: .bottomTrailing)
-                .padding(.trailing, 4)
-                .disabled(!self.isAsciiEditable)
-            }
-            .padding(.bottom, 3)
-                
-            VStack(spacing: buttonSpace) {
-                DataScreen(text: self.$asciiText, isEditable: self.$isAsciiEditable, isDecodable: self.$isAsciiDecodable, onEditingChanged: update)
-                
-                HStack(spacing: buttonSpace) {
-                    Button(action: { self.copy(isHex: false) }) { HorizontalBbody(t: "Button_Copy", i: "doc.on.doc", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
-                    Button(action: { self.paste(isHex: false) }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
-                    Button(action: { self.clear(isHex: false) }) { HorizontalBbody(t: "C", c: 3, b: .lightGray, f: .black) }
+                .padding(.bottom, 3)
+                    
+                VStack(spacing: buttonSpace) {
+                    DataScreen(text: self.$asciiText, isEditable: self.$isAsciiEditable, isDecodable: self.$isAsciiDecodable, onEditingChanged: update)
+                    
+                    HStack(spacing: buttonSpace) {
+                        Button(action: { self.copy(isHex: false) }) { HorizontalBbody(t: "Button_Copy", i: "doc.on.doc", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
+                        Button(action: { self.paste(isHex: false) }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 3, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
+                        Button(action: { self.clear(isHex: false) }) { HorizontalBbody(t: "C", c: 3, b: .lightGray, f: .black) }
+                    }
+                    .padding(.horizontal, buttonMargin)
                 }
-                .padding(.horizontal, object.isStandard ? 0 : 5)
                 
                 HStack(spacing: 0) {
                     Spacer()
@@ -84,42 +87,42 @@ struct CalculatorCharacters: View {
                         .foregroundColor(Color.init(UIColor.systemGray))
                     Spacer()
                 }
-                .padding(.top, object.isStandard ? 9 : 5)
-            }
-            .padding(.bottom, 10)
-            
-            HStack(alignment: .bottom) {
-                Text("Hex")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(Color.init(UIColor.systemGray))
-                    .padding(.leading, 4)
-                Spacer()
-                Picker("", selection: self.$object.charactersFont) {
-                    Text("Label_FontSmall").tag(DataScreen.fontSmall)
-                    Text("Label_FontLarge").tag(DataScreen.fontLarge)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .frame(width: 200, height: 32, alignment: .bottomTrailing)
-                .padding(.trailing, 4)
-                .onChange(of: object.charactersFont) { _ in
-                    self.setIndex()
-                    self.setHex()
-                    self.setChars()
-                    var isCRLF: Bool = false
-                    if let text2 = self.getAscii(isCRLF: &isCRLF) {
-                        self.returnCodeIndex = isCRLF ? 1 : 0
-                        self.asciiText = text2
-                        self.isAsciiEditable = true
-                        self.isAsciiDecodable = true
+                .padding(.top, 5)
+                .padding(.bottom, 10)
+                
+                HStack(alignment: .bottom) {
+                    Text("Hex")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(Color.init(CalculatorSharedObject.isDark ? .lightGray : .darkGray))
+                        .padding(.leading, 4)
+                    Spacer()
+                    Picker("", selection: self.$object.charactersFont) {
+                        Text("Label_FontSmall").tag(DataScreen.fontSmall)
+                        Text("Label_FontLarge").tag(DataScreen.fontLarge)
                     }
-                    else {
-                        self.asciiText = NSLocalizedString("Label_Non-unicode_character_data", comment: "")
-                        self.isAsciiEditable = false
-                        self.isAsciiDecodable = false
+                    .pickerStyle(SegmentedPickerStyle())
+                    .frame(width: 200, height: 32, alignment: .bottomTrailing)
+                    .padding(.trailing, 4)
+                    .onChange(of: object.charactersFont) { _ in
+                        self.setIndex()
+                        self.setHex()
+                        self.setChars()
+                        var isCRLF: Bool = false
+                        if let text2 = self.getAscii(isCRLF: &isCRLF) {
+                            self.returnCodeIndex = isCRLF ? 1 : 0
+                            self.asciiText = text2
+                            self.isAsciiEditable = true
+                            self.isAsciiDecodable = true
+                        }
+                        else {
+                            self.asciiText = NSLocalizedString("Label_Non-unicode_character_data", comment: "")
+                            self.isAsciiEditable = false
+                            self.isAsciiDecodable = false
+                        }
                     }
                 }
+                .padding(.bottom, 3)
             }
-            .padding(.bottom, 3)
             
             VStack(spacing: buttonSpace) {
                 HStack(spacing: 0) {
@@ -136,15 +139,15 @@ struct CalculatorCharacters: View {
                     Button(action: { self.paste(isHex: true) }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 3) }
                     Button(action: { self.clear(isHex: true) }) { HorizontalBbody(t: "C", c: 3, b: .lightGray, f: .black) }
                 }
-                .padding(.horizontal, object.isStandard ? 0 : 5)
+                .padding(.horizontal, buttonMargin)
                 
                 HStack(spacing: buttonSpace) {
                     Button(action: { self.convertX2A() }) { HorizontalBbody(t: "Button_Convert", i: "arrowtriangle.up.circle", c: 5, w: 2, b: .systemBlue) }
                     Button(action: { self.convertA2X() }) { HorizontalBbody(t: "Button_Convert", i: "arrowtriangle.down.circle", c: 5, w: 2, b: .systemBlue, f: self.isAsciiEditable ? .white : .systemGray) }.disabled(!self.isAsciiEditable)
                     Button(action: { UIApplication.shared.closeKeyboard() }) { HorizontalBbody(i: "keyboard.chevron.compact.down", c: 5, b: .systemBlue, f: self.isKeyboardOpened ? .white : .systemGray) }.disabled(!isKeyboardOpened)
                 }
-                .padding(.horizontal, object.isStandard ? 0 : 5)
-                .padding(.bottom, object.isStandard ? 0 : 5)
+                .padding(.horizontal, buttonMargin)
+                .padding(.bottom, buttonMargin)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
@@ -193,14 +196,14 @@ struct CalculatorCharacters: View {
         
         if self.data.count > 65536 {
             object.alert(NSLocalizedString("Message_Data_too_large", comment: ""))
-            object.sound(isError: true)
+            object.sound(SOUND_TYPE_ERROR)
             return
         }
         
         self.setIndex()
         self.setHex()
         self.setChars()
-        object.sound()
+        object.sound(SOUND_TYPE_ENTER)
     }
     
     private func convertX2A() {
@@ -221,7 +224,7 @@ struct CalculatorCharacters: View {
             guard let uint8 = UInt8(hexString, radix: 16) else {
                 self.isInvalid = true
                 object.alert(NSLocalizedString("Message_Non-hex_code_included", comment: ""))
-                object.sound(isError: true)
+                object.sound(SOUND_TYPE_ERROR)
                 return
             }
             uint8array.append(uint8)
@@ -231,7 +234,7 @@ struct CalculatorCharacters: View {
         
         if self.data.count > 65536 {
             object.alert(NSLocalizedString("Message_Data_too_large", comment: ""))
-            object.sound(isError: true)
+            object.sound(SOUND_TYPE_ERROR)
             return
         }
         
@@ -251,7 +254,7 @@ struct CalculatorCharacters: View {
             self.isAsciiEditable = false
             self.isAsciiDecodable = false
         }
-        object.sound()
+        object.sound(SOUND_TYPE_ENTER)
     }
     
     private func getAscii(isCRLF: inout Bool) -> String? {
@@ -289,7 +292,7 @@ struct CalculatorCharacters: View {
         let bytes = self.data.uint8array!
         
         while count < self.data.count {
-            dumpString += String(format: object.isUpper ? "%02X" : "%02x", bytes[count])
+            dumpString += String(format: object.appSettingUppercaseLetter ? "%02X" : "%02x", bytes[count])
             count += 1
             if count % 16 == 0 {
                 dumpString += "\n"
@@ -342,7 +345,7 @@ struct CalculatorCharacters: View {
             var hexString: String = ""
             let bytes = self.data.uint8array!
             for byte in bytes {
-                hexString += String(format: object.isUpper ? "%02X" : "%02x", byte)
+                hexString += String(format: object.appSettingUppercaseLetter ? "%02X" : "%02x", byte)
             }
             UIPasteboard.general.string = hexString
         }
@@ -351,6 +354,7 @@ struct CalculatorCharacters: View {
             UIPasteboard.general.string = self.asciiText
         }
         object.alert(NSLocalizedString("Message_Copied_to_clipboard", comment: ""))
+        object.sound(SOUND_TYPE_COPY)
     }
     private func paste(isHex: Bool) {
         guard let text = UIPasteboard.general.string else { return }

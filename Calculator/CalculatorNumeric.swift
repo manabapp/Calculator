@@ -8,43 +8,6 @@
 import SwiftUI
 import Foundation
 
-let BTYPE_0: Int = 0
-let BTYPE_1: Int = 1
-let BTYPE_2: Int = 2
-let BTYPE_3: Int = 3
-let BTYPE_4: Int = 4
-let BTYPE_5: Int = 5
-let BTYPE_6: Int = 6
-let BTYPE_7: Int = 7
-let BTYPE_8: Int = 8
-let BTYPE_9: Int = 9
-let BTYPE_A: Int = 10
-let BTYPE_B: Int = 11
-let BTYPE_C: Int = 12
-let BTYPE_D: Int = 13
-let BTYPE_E: Int = 14
-let BTYPE_F: Int = 15
-let BTYPE_DOT: Int = 16
-let BTYPE_SLASH: Int = 17
-let BTYPE_NOT: Int = 18
-let BTYPE_LEFT_SHIFT: Int = 19
-let BTYPE_RIGHT_SHIFT: Int = 20
-let BTYPE_PLUS_MINUS: Int = 21
-let BTYPE_NOW: Int = 22
-let BTYPE_2038: Int = 23
-let BTYPE_2106: Int = 24
-let BTYPE_DELETE: Int = 25
-let BTYPE_CLEAR: Int = 26
-let BTYPE_PLUS: Int = 27
-let BTYPE_MINUS: Int = 28
-let BTYPE_MULTIPLY: Int = 29
-let BTYPE_DIVIDE: Int = 30
-let BTYPE_REMAINDER: Int = 31
-let BTYPE_AND: Int = 32
-let BTYPE_OR: Int = 33
-let BTYPE_XOR: Int = 34
-let BTYPE_ENTER: Int = 35
-
 struct CalculatorNumeric: View {
     @EnvironmentObject var object: CalculatorSharedObject
     
@@ -63,7 +26,6 @@ struct CalculatorNumeric: View {
     
     private var mode: Int { object.numericMode }
     private var consoleString: String { self.console.replacingOccurrences(of:",", with:"") }
-    private var buttonSpace: CGFloat { object.isStandard ? 1.0 : 5.0 }
     private var isTyping: Bool { self.lastType <= BTYPE_DELETE }
     private var hasMemoryResult: Bool {
         switch self.mode {
@@ -85,7 +47,11 @@ struct CalculatorNumeric: View {
     private var isAnd: Bool       { if let type = self.operatorType { return type == BTYPE_AND       } else { return false } }
     private var isOr: Bool        { if let type = self.operatorType { return type == BTYPE_OR        } else { return false } }
     private var isXor: Bool       { if let type = self.operatorType { return type == BTYPE_XOR       } else { return false } }
-    private var column: Int       { self.isHex ? 6 : 5 }
+    
+    private var buttonSpace: CGFloat { object.isStandard ? 3.0 : 1.0 }
+    private var buttonMargin: CGFloat { object.isStandard ? 3.0 : 0.0 }
+    private var fieldsRadius: CGFloat { object.isStandard ? 8.0 : 0.0 }
+    private var column: Int { self.isHex ? 6 : 5 }
     
     //Valid range for modeD(Double)
     static let doubleMax: Double = 999999999999999
@@ -129,7 +95,7 @@ struct CalculatorNumeric: View {
         }
     }
     private func x2String(_ value: UInt64) -> String {
-        return String(format: object.isUpper ? "%llX" : "%llx", value)
+        return String(format: object.appSettingUppercaseLetter ? "%llX" : "%llx", value)
     }
 
     var body: some View {
@@ -180,14 +146,13 @@ struct CalculatorNumeric: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.4)
             
-            Button(action: { object.byteFieldsClosed.toggle() }) {
+            Button(action: { object.byteFieldsClosed.toggle(); object.sound(SOUND_TYPE_OPEN_CLOSE) }) {
                 if object.byteFieldsClosed {
                     Image(systemName: "chevron.compact.up")
                         .font(.system(size: 20, weight: .semibold))
-                        .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
+                        .frame(width: object.deviceWidth, height: 24, alignment: .center)
                         .foregroundColor(Color.init(CalculatorSharedObject.isDark ? .lightGray : .darkGray))
                         .background(Color.init(UIColor.secondarySystemBackground))
-                        .cornerRadius(object.isStandard ? 0 : 8)
                 }
                 else {
                     HStack(spacing: 10) {
@@ -212,7 +177,7 @@ struct CalculatorNumeric: View {
                     .background(Color.init(UIColor.secondarySystemBackground))
                 }
             }
-            
+
             VStack(spacing: buttonSpace) {
                 if isHex {
                     HStack(spacing: buttonSpace) {
@@ -286,9 +251,10 @@ struct CalculatorNumeric: View {
                     Button(action: { paste() }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 2) }
                 }
             }
-            .padding(.horizontal, object.isStandard ? 0 : 5)
+            .padding(.horizontal, buttonMargin)
             .padding(.top, buttonSpace)
-            .padding(.bottom, object.isStandard ? 0 : 5)
+            .padding(.bottom, buttonMargin)
+            .background(Color.init(UIColor.secondarySystemBackground))
         }
     }
     
@@ -435,7 +401,7 @@ struct CalculatorNumeric: View {
             
         case BTYPE_A ... BTYPE_F:
             guard isHex else { return false }
-            guard let _ = UInt64(self.consoleString + String(format: object.isUpper ? "%X" : "%x", type), radix: 16) else { return false }
+            guard let _ = UInt64(self.consoleString + String(format: object.appSettingUppercaseLetter ? "%X" : "%x", type), radix: 16) else { return false }
             
         case BTYPE_DOT:
             guard isDouble else { return false }
@@ -511,10 +477,10 @@ struct CalculatorNumeric: View {
         //ABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD
         case BTYPE_A ... BTYPE_F:
             if self.isTyping && !self.isClear {
-                self.console = self.consoleString + String(format: object.isUpper ? "%X" : "%x", type)
+                self.console = self.consoleString + String(format: object.appSettingUppercaseLetter ? "%X" : "%x", type)
             }
             else {
-                self.console = String(format:  object.isUpper ? "%X" : "%x", type)
+                self.console = String(format:  object.appSettingUppercaseLetter ? "%X" : "%x", type)
             }
             
         //........................................
@@ -619,10 +585,11 @@ struct CalculatorNumeric: View {
             else {
                 self.setResult()
             }
-            if !self.calculate() {
-                return
+            if self.calculate() {
+                object.sound(SOUND_TYPE_ENTER)
+                self.putResult()
             }
-            self.putResult()
+            return
 
         default:
             fatalError("CalculatorNumeric.action: unexpected type: \(type)")
@@ -647,12 +614,12 @@ struct CalculatorNumeric: View {
             }
             if value.isInfinite || value.isNaN {
                 object.alert(NSLocalizedString("Message_Division_by_zero", comment: ""))
-                object.sound(isError: true)
+                object.sound(SOUND_TYPE_ERROR)
                 return false
             }
             if value < Self.doubleMin || value > Self.doubleMax {
                 object.alert(NSLocalizedString("Message_Out_of_range", comment: ""))
-                object.sound(isError: true)
+                object.sound(SOUND_TYPE_ERROR)
                 return false
             }
             if value < Self.doublePlusMin && value > Self.doubleMinusMax {
@@ -675,11 +642,11 @@ struct CalculatorNumeric: View {
             if overflow {
                 if memoryOperandI == 0 {
                     object.alert(NSLocalizedString("Message_Division_by_zero", comment: ""))
-                    object.sound(isError: true)
+                    object.sound(SOUND_TYPE_ERROR)
                 }
                 else {
                     object.alert(NSLocalizedString("Message_Overflow", comment: ""))
-                    object.sound(isError: true)
+                    object.sound(SOUND_TYPE_ERROR)
                 }
                 return false
             }
@@ -701,11 +668,11 @@ struct CalculatorNumeric: View {
             if overflow {
                 if memoryOperandX == 0 {
                     object.alert(NSLocalizedString("Message_Division_by_zero", comment: ""))
-                    object.sound(isError: true)
+                    object.sound(SOUND_TYPE_ERROR)
                 }
                 else {
                     object.alert(NSLocalizedString("Message_Overflow", comment: ""))
-                    object.sound(isError: true)
+                    object.sound(SOUND_TYPE_ERROR)
                 }
                 return false
             }
@@ -717,6 +684,7 @@ struct CalculatorNumeric: View {
     private func copy() {
         UIPasteboard.general.string = self.consoleString
         object.alert(NSLocalizedString("Message_Copied_to_clipboard", comment: ""))
+        object.sound(SOUND_TYPE_COPY)
     }
     
     private func paste() {

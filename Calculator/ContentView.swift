@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var object: CalculatorSharedObject
     @State private var selection = 0
-
+    
     var body: some View {
         ZStack {
             TabView(selection: $selection) {

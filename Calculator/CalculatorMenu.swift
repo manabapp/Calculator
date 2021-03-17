@@ -88,13 +88,24 @@ fileprivate struct AppSetting: View {
     
     var body: some View {
         List {
-            Section(header: Text("UI DESIGN").font(.system(size: 16, weight: .semibold)),
-                    footer: Text("Footer_UI_DESIGN").font(.system(size: 12))) {
-                Picker("", selection: self.$object.appSettingUIStyle) {
-                    Text("Label_Standard_style").tag(CalculatorSharedObject.uiStyleStandard)
-                    Text("Label_Keyboard_style").tag(CalculatorSharedObject.uiStyleKeyboard)
+            Section(header: Text("VIEW").font(.system(size: 16, weight: .semibold)),
+                    footer: Text("Footer_VIEW").font(.system(size: 12))) {
+                HStack {
+                    Text("Label_Theme")
+                    Spacer()
+                    Picker("", selection: self.$object.appSettingTheme) {
+                        Text("Label_Standard").tag(CalculatorSharedObject.themeStandard)
+                        Text("Label_Programmer").tag(CalculatorSharedObject.themeProgrammer)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .frame(width: 230)
                 }
-                .pickerStyle(SegmentedPickerStyle())
+                Toggle(isOn: self.$object.appSetting1000Separator) {
+                    Text("Label_THOUSANDS_SEPARATOR")
+                }
+                Toggle(isOn: self.$object.appSettingUppercaseLetter) {
+                    Text("Label_UPPERCASE_LETTER")
+                }
             }
             Section(header: Text("IDLE TIMER").font(.system(size: 16, weight: .semibold)),
                     footer: Text("Footer_IDLE_TIMER").font(.system(size: 12))) {
@@ -107,20 +118,11 @@ fileprivate struct AppSetting: View {
                 Toggle(isOn: self.$object.appSettingSoundEffects) {
                     Text("Label_Enabled")
                 }
-            }
-            Section(header: Text("THOUSANDS SEPARATOR").font(.system(size: 16, weight: .semibold)),
-                    footer: Text("Footer_THOUSANDS_SEPARATOR").font(.system(size: 12))) {
-                Toggle(isOn: self.$object.appSetting1000Separator) {
-                    Text("Label_Enabled")
+                if object.appSettingSoundEffects {
+                    Toggle(isOn: self.$object.appSettingVibration) {
+                        Text("Label_Vibration")
+                    }
                 }
-            }
-            Section(header: Text("HEXADECIMAL LETTER").font(.system(size: 16, weight: .semibold)),
-                    footer: Text("Footer_HEXADECIMAL_LETTER").font(.system(size: 12))) {
-                Picker("", selection: self.$object.appSettingHexLetter) {
-                    Text("Label_Lowercase").tag(CalculatorSharedObject.hexLetterLowercase)
-                    Text("Label_Uppercase").tag(CalculatorSharedObject.hexLetterUppercase)
-                }
-                .pickerStyle(SegmentedPickerStyle())
             }
         }
         .listStyle(GroupedListStyle())
@@ -208,17 +210,16 @@ fileprivate struct NumericSpecification: View {
         List {
             Section(header: Text("Header_GENERAL")) {
                 HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_General1") }
+                HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_General2") }
+                HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_General3") }
             }
             Section(header: Text("Header_DOUBLE_TYPE")) {
                 HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_DoubleType1") }
                 HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_DoubleType2") }
                 HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_DoubleType3") }
                 HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_DoubleType4") }
-            }
-            Section(header: Text("Header_ERROR_OPERATION")) {
-                HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_ErrorOperation1") }
-                HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_ErrorOperation2") }
-                HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_ErrorOperation3") }
+                HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_DoubleType5") }
+                HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_DoubleType6") }
             }
             Section(header: Text("Header_TYPE_SWITCHING")) {
                 HStack(alignment: .top) { Image(systemName: "questionmark.circle"); Text("Specification_TypeSwitching1") }

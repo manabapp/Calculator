@@ -52,13 +52,15 @@ struct CalculatorUNIXTime: View {
     private var calendar: Calendar { self.isLocal ? Self.calendarLocal : Self.calendarUTC }
     private var formatter: DateFormatter { self.isLocal ? Self.formatterLocal : Self.formatterUTC }
     
-    private var buttonSpace: CGFloat { object.isStandard ? 1.0 : 5.0 }
-    private var buttonWidth: CGFloat { (object.deviceWidth - self.buttonSpace * 4 - CGFloat(object.isStandard ? 0.0 : 5.0 * 2)) / 5 }
+    private var buttonSpace: CGFloat { object.isStandard ? 3.0 : 1.0 }
+    private var buttonMargin: CGFloat { object.isStandard ? 3.0 : 0.0 }
+    private var fieldsRadius: CGFloat { object.isStandard ? 8.0 : 0.0 }
+    private var buttonWidth: CGFloat { (object.deviceWidth - self.buttonSpace * 4 - self.buttonMargin * 2) / 5 }
     private var buttonHeight: CGFloat { self.buttonWidth * Bbody.rate }
-    private var inputsHeight: CGFloat { self.buttonHeight * 4 + HorizontalBbody.height + self.buttonSpace * 4 + CGFloat(object.isStandard ? 0.0 : 5.0)}
+    private var inputsHeight: CGFloat { self.buttonHeight * 4 + HorizontalBbody.height + self.buttonSpace * 4 + self.buttonMargin * 1 }
     private var pickerWidthYear: CGFloat { 60.0 }
     private var pickerWidth: CGFloat { (object.deviceWidth - self.pickerWidthYear - 8.0 * 5 - 5.0 * 11) / 5 }
-    private var pickersHeight: CGFloat { self.inputsHeight - HorizontalBbody.height * 2 - (object.isStandard ? 0.0 : 5.0) }
+    private var pickersHeight: CGFloat { self.inputsHeight - HorizontalBbody.height * 2 - self.buttonMargin * 1 }
     
     var body: some View {
         GeometryReader { geometry in
@@ -94,14 +96,13 @@ struct CalculatorUNIXTime: View {
                     .frame(maxWidth: .infinity, alignment: .bottomTrailing)
                     .padding(5)
                     
-                    Button(action: { object.byteFieldsClosed.toggle() }) {
+                    Button(action: { object.byteFieldsClosed.toggle(); object.sound(SOUND_TYPE_OPEN_CLOSE) }) {
                         if object.byteFieldsClosed {
                             Image(systemName: "chevron.compact.up")
                                 .font(.system(size: 20, weight: .semibold))
-                                .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
+                                .frame(width: object.deviceWidth, height: 24, alignment: .center)
                                 .foregroundColor(Color.init(CalculatorSharedObject.isDark ? .lightGray : .darkGray))
                                 .background(Color.init(UIColor.secondarySystemBackground))
-                                .cornerRadius(object.isStandard ? 0 : 8)
                         }
                         else {
                             HStack(spacing: 10) {
@@ -142,12 +143,13 @@ struct CalculatorUNIXTime: View {
                         HStack(spacing: buttonSpace) {
                             Button(action: { copy() }) { HorizontalBbody(t: "Button_Copy", i: "doc.on.doc", c: 3) }
                             Button(action: { paste() }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 3) }
-                            Button(action: { setDate(); self.isShowing.toggle() }) { HorizontalBbody(i: "chevron.up", c: 3, b: .systemBlue) }
+                            Button(action: { setDate(); self.isShowing.toggle(); object.sound(SOUND_TYPE_OPEN_CLOSE) }) { HorizontalBbody(i: "chevron.up", c: 3, b: .systemBlue) }
                         }
                     }
-                    .padding(.horizontal, object.isStandard ? 0 : 5)
+                    .padding(.horizontal, buttonMargin)
                     .padding(.top, buttonSpace)
-                    .padding(.bottom, object.isStandard ? 0 : 5)
+                    .padding(.bottom, buttonMargin)
+                    .background(Color.init(UIColor.secondarySystemBackground))
                 }
                 
                 VStack(spacing: 0) {
@@ -157,7 +159,7 @@ struct CalculatorUNIXTime: View {
                         Button(action: { tap(BTYPE_2038) }) { HorizontalBbody(t: "2038", c: 4, b: .lightGray, f: .black) }
                         Button(action: { tap(BTYPE_2106) }) { HorizontalBbody(t: "2106", c: 4, b: .lightGray, f: .black) }
                     }
-                    .padding(.horizontal, object.isStandard ? 0 : 5)
+                    .padding(.horizontal, buttonMargin)
                     
                     HStack(spacing: 5.0) {
                         Picker(selection: $year, label: Text("")) {
@@ -225,14 +227,14 @@ struct CalculatorUNIXTime: View {
                     HStack(spacing: buttonSpace) {
                         Button(action: { copy() }) { HorizontalBbody(t: "Button_Copy", i: "doc.on.doc", c: 3) }
                         Button(action: { paste() }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 3) }
-                        Button(action: { self.isShowing.toggle() }) { HorizontalBbody(i: "chevron.down", c: 3, b: .systemBlue) }
+                        Button(action: { self.isShowing.toggle(); object.sound(SOUND_TYPE_OPEN_CLOSE) }) { HorizontalBbody(i: "chevron.down", c: 3, b: .systemBlue) }
                     }
-                    .padding(.horizontal, object.isStandard ? 0 : 5)
-                    .padding(.bottom, object.isStandard ? 0 : 5)
+                    .padding(.horizontal, buttonMargin)
+                    .padding(.bottom, buttonMargin)
 
                     Spacer()
                 }
-                .background(Color.init(.systemBackground))
+                .background(Color.init(UIColor.secondarySystemBackground))
                 .frame(maxWidth: .infinity)
                 .animation(.linear)
                 .offset(y: self.isShowing ? geometry.size.height - inputsHeight : object.deviceHeight)
@@ -312,6 +314,7 @@ struct CalculatorUNIXTime: View {
     private func copy() {
         UIPasteboard.general.string = self.consoleString
         object.alert(NSLocalizedString("Message_Copied_to_clipboard", comment: ""))
+        object.sound(SOUND_TYPE_COPY)
     }
     
     private func paste() {
@@ -347,7 +350,7 @@ struct CalculatorUNIXTime: View {
         }
         if calDate < Self.dateMin || calDate > Self.dateMax {
             object.alert(NSLocalizedString("Message_Overflow", comment: ""))
-            object.sound(isError: true)
+            object.sound(SOUND_TYPE_ERROR)
             return
         }
         self.date = calDate

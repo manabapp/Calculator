@@ -21,7 +21,9 @@ struct CalculatorIPAddress: View {
     static let modeIPv4: Int = 0
     static let modeIPv6: Int = 1
     
-    private var buttonSpace: CGFloat { object.isStandard ? 1.0 : 5.0 }
+    private var buttonSpace: CGFloat { object.isStandard ? 3.0 : 1.0 }
+    private var buttonMargin: CGFloat { object.isStandard ? 3.0 : 0.0 }
+    private var fieldsRadius: CGFloat { object.isStandard ? 8.0 : 0.0 }
     private var isClear: Bool { self.console.isEmpty }
     private var isAllClear: Bool  { self.isClear && self.netaddr == nil && self.subnetmask == nil && self.broadcast == nil }
     private var hasSlash: Bool { self.console.contains("/") }
@@ -89,14 +91,13 @@ struct CalculatorIPAddress: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.4)
             
-            Button(action: { object.byteFieldsClosed.toggle() }) {
+            Button(action: { object.byteFieldsClosed.toggle(); object.sound(SOUND_TYPE_OPEN_CLOSE) }) {
                 if object.byteFieldsClosed {
                     Image(systemName: "chevron.compact.up")
                         .font(.system(size: 20, weight: .semibold))
-                        .frame(width: object.isStandard ? object.deviceWidth : object.deviceWidth - 10.0, height: 24, alignment: .center)
+                        .frame(width: object.deviceWidth, height: 24, alignment: .center)
                         .foregroundColor(Color.init(CalculatorSharedObject.isDark ? .lightGray : .darkGray))
                         .background(Color.init(UIColor.secondarySystemBackground))
-                        .cornerRadius(object.isStandard ? 0 : 8)
                 }
                 else {
                     VStack(spacing: 5) {
@@ -151,9 +152,10 @@ struct CalculatorIPAddress: View {
                     Button(action: { self.paste() }) { HorizontalBbody(t: "Button_Paste", i: "doc.on.clipboard", c: 2) }
                 }
             }
-            .padding(.horizontal, object.isStandard ? 0 : 5)
+            .padding(.horizontal, buttonMargin)
             .padding(.top, buttonSpace)
-            .padding(.bottom, object.isStandard ? 0 : 5)
+            .padding(.bottom, buttonMargin)
+            .background(Color.init(UIColor.secondarySystemBackground))
         }
     }
     
@@ -200,7 +202,6 @@ struct CalculatorIPAddress: View {
     
     private func tap(_ type: Int) {
         if self.action(type) {
-            object.sound()
             syncConsole()
         }
     }
@@ -267,23 +268,26 @@ struct CalculatorIPAddress: View {
             if !hasSlash {
                 guard self.console.isValidIPv4Format else {
                     object.alert(NSLocalizedString("Message_Address_invalid", comment: ""))
-                    object.sound(isError: true)
+                    object.sound(SOUND_TYPE_ERROR)
                     return false
                 }
-                return true
+                return true  // no sound
             }
             guard self.console.isValidCidrFormat else {
                 object.alert(NSLocalizedString("Message_Address_invalid", comment: ""))
-                object.sound(isError: true)
+                object.sound(SOUND_TYPE_ERROR)
                 return false
             }
             netaddr = ipaddr & netmask
             subnetmask = netmask
             broadcast = netaddr! | ~netmask
-            
+            object.sound(SOUND_TYPE_ENTER)
+            return true
+
         default:
             fatalError("CalculatorIPAddress.action: unexpected type: \(type)")
         }
+        object.sound()
         return true
     }
     
@@ -293,6 +297,7 @@ struct CalculatorIPAddress: View {
         }
         UIPasteboard.general.string = self.console
         object.alert(NSLocalizedString("Message_Copied_to_clipboard", comment: ""))
+        object.sound(SOUND_TYPE_COPY)
     }
     
     private func paste() {

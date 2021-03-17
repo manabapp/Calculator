@@ -20,10 +20,11 @@ struct Bbody: View {
     var v: Bool = false          //Converts Upper/Lower case depending on app setting
     var m: Bool = false          //Uses monospaced font
     
-    private var buttonSpace: CGFloat { object.isStandard ? 1.0 : 5.0 }
-    private var buttonWidth: CGFloat { (object.deviceWidth - self.buttonSpace * CGFloat(c - 1) - CGFloat(object.isStandard ? 0.0 : 10.0)) / CGFloat(c) }
+    private var buttonSpace: CGFloat { object.isStandard ? 3.0 : 1.0 }
+    private var buttonMargin: CGFloat { object.isStandard ? 3.0 : 0.0 }
+    private var buttonWidth: CGFloat { (object.deviceWidth - self.buttonSpace * CGFloat(c - 1) - self.buttonMargin * 2) / CGFloat(c) }
     private var buttonHeight: CGFloat { self.buttonWidth * Self.rate }
-    private var buttonRadius: CGFloat { object.isStandard ? 0.0 : self.buttonHeight / 4 }
+    private var buttonRadius: CGFloat { object.isStandard ? self.buttonHeight / 8 : 0.0 }
     private var monospaceFontSize: CGFloat { Self.fontSize * 1.2 }
     
     static var rate: CGFloat = 1.0
@@ -52,17 +53,17 @@ struct Bbody: View {
                 .font(m ? Font.custom("Menlo", size: Self.fontSize).bold() : .system(size: Self.fontSize, weight: .semibold))
                 .foregroundColor(Color.init(f))
                 .background(Color.init(b))
-                .cornerRadius(object.isStandard ? 0 : buttonWidth / 4)
+                .cornerRadius(buttonRadius)
                 .overlay(
-                    RoundedRectangle(cornerRadius: object.isStandard ? 0 : buttonWidth / 4)
+                    RoundedRectangle(cornerRadius: buttonRadius)
                         .stroke(Color.init(CalculatorSharedObject.isDark ? UIColor.lightGray: UIColor.darkGray), lineWidth: s ? 1 : 0)
                 )
                 .opacity(s ? 0.8:1.0)
         }
         else {
             Image(systemName: self.imageName)
-                .frame(width: object.isStandard ? buttonWidth * CGFloat(w) + 1.0 * CGFloat(w - 1) : buttonWidth * CGFloat(w) + 5.0 * CGFloat(w - 1),
-                       height: object.isStandard ? buttonHeight * CGFloat(h) + 1.0 * CGFloat(h - 1) : buttonHeight * CGFloat(h) + 5.0 * CGFloat(h - 1),
+                .frame(width: buttonWidth * CGFloat(w) + buttonSpace * CGFloat(w - 1),
+                       height: buttonHeight * CGFloat(h) + buttonSpace * CGFloat(h - 1),
                        alignment: .center)
                 .font(.system(size: Self.fontSize, weight: .semibold))
                 .background(Color.init(b))
@@ -91,7 +92,7 @@ struct Bbody: View {
     private var label: String {
         if let text = self.t {
             if self.v {
-                return object.isUpper ? text.uppercased() : text.lowercased()
+                return object.appSettingUppercaseLetter ? text.uppercased() : text.lowercased()
             }
             else {
                 return text

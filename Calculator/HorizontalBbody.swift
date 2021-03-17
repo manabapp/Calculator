@@ -17,11 +17,12 @@ struct HorizontalBbody: View {
     var b: UIColor = .darkGray       //Background color
     var f: UIColor = .white          //Foreground color
     
-    private var buttonSpace: CGFloat { object.isStandard ? 1.0 : 5.0 }
-    private var buttonWidth: CGFloat { (object.deviceWidth - self.buttonSpace * CGFloat(c - 1) - CGFloat(object.isStandard ? 0.0 : 10.0)) / CGFloat(c) }
+    private var buttonSpace: CGFloat { object.isStandard ? 3.0 : 1.0 }
+    private var buttonMargin: CGFloat { object.isStandard ? 3.0 : 0.0 }
+    private var buttonWidth: CGFloat { (object.deviceWidth - self.buttonSpace * CGFloat(c - 1) - self.buttonMargin * 2) / CGFloat(c) }
     private var buttonHeight: CGFloat { Self.height }
-    private var buttonRadius: CGFloat { object.isStandard ? 0.0 : self.buttonHeight / 4 }
-    
+    private var buttonRadius: CGFloat { object.isStandard ? self.buttonHeight / 5 : 0.0 }
+
     static var height: CGFloat = 40.0
     static var fontSize: CGFloat = 16.0
     static func initSize(width: CGFloat, height: CGFloat) {
